@@ -38,6 +38,7 @@ class RAGRetriever:
 class RAGEnhancer(nn.Module):
     def __init__(self, corpus_dir, embed_dim=512, top_k=5, device='cuda'):
         super().__init__()
+        self.device =device
         self.retriever = RAGRetriever(corpus_dir, top_k=top_k, device=device)
         doc_embed_dim = self.retriever.encoder.get_sentence_embedding_dimension()
 
@@ -58,6 +59,9 @@ class RAGEnhancer(nn.Module):
             nn.Dropout(0.1),
             nn.Linear(embed_dim * 2, embed_dim)
         )
+        
+        # 確保所有模組都在正確的設備上
+        self.to(device)
 
     def forward(self, original_text_features, raw_queries):
         batch_size = original_text_features.shape[0]
@@ -78,8 +82,10 @@ class RAGEnhancer(nn.Module):
 
         with torch.no_grad():
             doc_embeddings = self.retriever.encoder.encode(
-                flat_docs, convert_to_tensor=True, device=original_text_features.device
+                flat_docs, convert_to_tensor=True, device='cpu'  # 先編碼到CPU
             )
+            # 立即移動到目標設備
+            doc_embeddings = doc_embeddings.to(original_text_features.device)
         
         doc_features_proj = self.doc_projection(doc_embeddings)
         
@@ -91,11 +97,13 @@ class RAGEnhancer(nn.Module):
                 doc_features_list.append(doc_features_proj[current_pos : current_pos + num_docs])
                 current_pos += num_docs
             else:
-                placeholder = torch.zeros(self.retriever.top_k, original_text_features.shape[-1], device=original_text_features.device)
-                # 確保 placeholder 也有正確的 padding
-                padded_placeholder = torch.zeros(self.retriever.top_k, placeholder.shape[-1], device=placeholder.device)
-                padded_placeholder[:len(placeholder)] = placeholder
-                doc_features_list.append(padded_placeholder)
+                # 確保佔位符也在正確的設備上
+                placeholder = torch.zeros(
+                    self.retriever.top_k, 
+                    original_text_features.shape[-1], 
+                    device=original_text_features.device  # 使用正確的設備
+                )
+                doc_features_list.append(placeholder)
 
         # 使用 padding 來處理長度不一的檢索結果
         padded_doc_features = torch.nn.utils.rnn.pad_sequence(doc_features_list, batch_first=True, padding_value=0.0)

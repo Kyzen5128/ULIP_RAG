@@ -60,3 +60,6 @@ class ULIPWithImageLoss(nn.Module):
             pc_image_acc = 100 * correct / local_batch_size
 
         return {'loss': loss, 'ulip_loss': loss, 'ulip_pc_image_acc': pc_image_acc, 'ulip_pc_text_acc': pc_text_acc}
+
+# Alias for compatibility with ULIP_models_rag.py
+ClipLoss = ULIPWithImageLoss
