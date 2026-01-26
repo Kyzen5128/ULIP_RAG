@@ -167,7 +167,7 @@ def main(args):
 
     optimizer = torch.optim.AdamW(optim_params, lr=args.lr, betas=args.betas,
                                     eps=args.eps)
-    scaler = torch.amp.GradScaler('cuda',enabled=not args.disable_amp)
+    scaler = torch.cuda.amp.GradScaler(enabled=not args.disable_amp)
 
     # optionally resume from a checkpoint
     if args.resume:
@@ -319,7 +319,8 @@ def train(train_loader, model, criterion, optimizer, scaler, epoch, lr_schedule,
         
         # --- 6. 正確的資料解包與傳輸 ---
         if args.use_rag_adapter:
-            pc, text_data, image = batch_data
+            # RAG collate 返回: (pc, text_data, image, labels)
+            pc, text_data, image, labels = batch_data
             text_input_to_model = (text_data[0].cuda(args.gpu, non_blocking=True), text_data[1])
         else:
             _, _, text_input_to_model, pc, image = batch_data
@@ -332,7 +333,7 @@ def train(train_loader, model, criterion, optimizer, scaler, epoch, lr_schedule,
         for k, param_group in enumerate(optimizer.param_groups):
             param_group['lr'] = lr_schedule[it]
 
-        with torch.amp.autocast('cuda',enabled=not args.disable_amp):
+        with torch.cuda.amp.autocast(enabled=not args.disable_amp):
             outputs = model(pc=pc, text=text_input_to_model, image=image)
             loss_dict = criterion(outputs)
             loss = loss_dict['loss']
