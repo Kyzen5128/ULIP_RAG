@@ -1,0 +1,141 @@
+=== RAG 語料庫統計報告 ===
+
+總條目數: 1118
+平均信心度: 0.689
+
+=== 類別分布 ===
+cabinet: 83 (7.4%)
+wardrobe: 80 (7.2%)
+stool: 72 (6.4%)
+bed: 71 (6.4%)
+table: 70 (6.3%)
+bench: 70 (6.3%)
+sofa: 68 (6.1%)
+shelf: 68 (6.1%)
+bookshelf: 66 (5.9%)
+desk: 65 (5.8%)
+chair: 64 (5.7%)
+dresser: 64 (5.7%)
+lamp: 62 (5.5%)
+armchair: 56 (5.0%)
+coffee table: 54 (4.8%)
+nightstand: 53 (4.7%)
+dining table: 52 (4.7%)
+
+=== 來源分布 ===
+synthetic: 1048 (93.7%)
+wikipedia:List of furniture types: 6 (0.5%)
+wikipedia:Sofa bed: 3 (0.3%)
+wikipedia:Kitchen cabinet: 3 (0.3%)
+wikipedia:Chair: 2 (0.2%)
+wikipedia:Dressing table: 2 (0.2%)
+wikipedia:Davenport (sofa): 2 (0.2%)
+wikipedia:Bed: 2 (0.2%)
+wikipedia:Murphy bed: 2 (0.2%)
+wikipedia:Cabinetry: 2 (0.2%)
+wikipedia:Bathroom cabinet: 2 (0.2%)
+wikipedia:Akari (lamp): 2 (0.2%)
+wikipedia:Oil lamp: 2 (0.2%)
+wikipedia:Stool (seat): 2 (0.2%)
+wikipedia:Ducking stool: 2 (0.2%)
+wikipedia:Monks bench: 2 (0.2%)
+wikipedia:Welsh dresser: 2 (0.2%)
+wikipedia:Irish dresser: 2 (0.2%)
+wikipedia:Bookcase: 2 (0.2%)
+wikipedia:Noguchi table: 2 (0.2%)
+wikipedia:Garden furniture: 1 (0.1%)
+wikipedia:Love chair: 1 (0.1%)
+wikipedia:Chinese furniture: 1 (0.1%)
+wikipedia:Table (furniture): 1 (0.1%)
+wikipedia:Furniture: 1 (0.1%)
+wikipedia:DFS (furniture retailer): 1 (0.1%)
+wikipedia:Moving sofa problem: 1 (0.1%)
+wikipedia:Hoosier cabinet: 1 (0.1%)
+wikipedia:Shaker furniture: 1 (0.1%)
+wikipedia:Shelf (storage): 1 (0.1%)
+wikipedia:32 mm cabinetmaking system: 1 (0.1%)
+wikipedia:Desk: 1 (0.1%)
+wikipedia:Hoover desk: 1 (0.1%)
+wikipedia:Theodore Roosevelt desk: 1 (0.1%)
+wikipedia:Close stool: 1 (0.1%)
+wikipedia:Human furniture: 1 (0.1%)
+wikipedia:Bench (furniture): 1 (0.1%)
+wikipedia:Settle (furniture): 1 (0.1%)
+wikipedia:Wardrobe: 1 (0.1%)
+wikipedia:Wardrobe (clothing): 1 (0.1%)
+wikipedia:Alexandre de Betak: 1 (0.1%)
+wikipedia:Coffee table: 1 (0.1%)
+wikipedia:The Coffee Table: 1 (0.1%)
+wikipedia:Dining table: 1 (0.1%)
+wikipedia:Dining room: 1 (0.1%)
+wikipedia:Nightstand: 1 (0.1%)
+
+=== 屬性統計 ===
+
+COLORS:
+  copper: 76
+  red: 73
+  blue: 37
+  silver: 37
+  gold: 36
+  orange: 34
+  cream: 33
+  white: 32
+  navy: 30
+  green: 28
+
+MATERIALS:
+  copper: 76
+  wood: 66
+  bamboo: 58
+  rattan: 57
+  linen: 56
+  leather: 54
+  marble: 53
+  acrylic: 51
+  oak: 51
+  pine: 49
+
+FUNCTIONS:
+  dining: 138
+  seating: 34
+  decorative: 33
+  sleeping: 29
+  reading: 28
+  storage: 26
+  display: 26
+  organization: 26
+  working: 24
+  entertainment: 22
+
+SIZES:
+  king: 33
+  large: 6
+  small: 3
+  queen: 1
+  single: 1
+  compact: 1
+
+STYLES:
+  modern: 272
+  contemporary: 213
+  victorian: 55
+  art deco: 50
+  mid-century: 45
+  minimalist: 43
+  bohemian: 43
+  industrial: 42
+  colonial: 42
+  vintage: 42
+
+SHAPES:
+  angular: 30
+  geometric: 24
+  curved: 19
+  linear: 18
+  oval: 18
+  straight: 17
+  organic: 17
+  round: 14
+  rectangular: 13
+  circular: 13

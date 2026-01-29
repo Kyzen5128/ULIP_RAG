@@ -1,0 +1,33 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Model checkpoints and outputs (large files)
+*.pt
+*.pth
+*.ckpt
+ulip_rag/outputs/
+
+# Data files (typically large)
+*.npy
+*.npz
+*.h5
+*.hdf5
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+venv/
+env/

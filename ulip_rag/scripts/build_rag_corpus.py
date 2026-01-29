@@ -61,7 +61,7 @@ class HFEmbeddingModel:
 class OpenCorpusBuilder:
     """開放式語料庫建構器"""
     
-    def __init__(self, output_dir="data/rag_corpus"):
+    def __init__(self, output_dir="/home/kyzen/cheng/ulip_rag/rag_corpus"):
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
         
@@ -444,7 +444,7 @@ def main():
     import argparse
     
     parser = argparse.ArgumentParser(description="建構開放式 RAG 語料庫")
-    parser.add_argument("--output_dir", default="data/rag_corpus", 
+    parser.add_argument("--output_dir", default="/home/kyzen/cheng/ulip_rag/rag_corpus", 
                        help="輸出目錄")
     parser.add_argument("--categories", nargs='+', 
                        help="目標類別列表（可選）")

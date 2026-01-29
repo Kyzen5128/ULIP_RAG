@@ -1,0 +1,143 @@
+=== RAG 語料庫統計報告 ===
+
+總條目數: 1134
+平均信心度: 0.688
+
+=== 類別分布 ===
+cabinet: 84 (7.4%)
+bed: 73 (6.4%)
+lamp: 73 (6.4%)
+table: 72 (6.3%)
+wardrobe: 72 (6.3%)
+shelf: 71 (6.3%)
+bench: 70 (6.2%)
+chair: 69 (6.1%)
+desk: 69 (6.1%)
+bookshelf: 69 (6.1%)
+sofa: 67 (5.9%)
+dresser: 66 (5.8%)
+stool: 61 (5.4%)
+coffee table: 61 (5.4%)
+armchair: 57 (5.0%)
+nightstand: 52 (4.6%)
+dining table: 48 (4.2%)
+
+=== 來源分布 ===
+synthetic: 1063 (93.7%)
+wikipedia:List of furniture types: 4 (0.4%)
+wikipedia:Sofa bed: 3 (0.3%)
+wikipedia:Kitchen cabinet: 3 (0.3%)
+wikipedia:Partners desk: 3 (0.3%)
+wikipedia:Chair: 2 (0.2%)
+wikipedia:Dressing table: 2 (0.2%)
+wikipedia:Davenport (sofa): 2 (0.2%)
+wikipedia:Bed: 2 (0.2%)
+wikipedia:Murphy bed: 2 (0.2%)
+wikipedia:Cabinetry: 2 (0.2%)
+wikipedia:Bathroom cabinet: 2 (0.2%)
+wikipedia:Akari (lamp): 2 (0.2%)
+wikipedia:Oil lamp: 2 (0.2%)
+wikipedia:Stool (seat): 2 (0.2%)
+wikipedia:Ducking stool: 2 (0.2%)
+wikipedia:Monks bench: 2 (0.2%)
+wikipedia:Welsh dresser: 2 (0.2%)
+wikipedia:Irish dresser: 2 (0.2%)
+wikipedia:Bookcase: 2 (0.2%)
+wikipedia:Noguchi table: 2 (0.2%)
+wikipedia:Garden furniture: 1 (0.1%)
+wikipedia:Love chair: 1 (0.1%)
+wikipedia:Chinese furniture: 1 (0.1%)
+wikipedia:Table (furniture): 1 (0.1%)
+wikipedia:Furniture: 1 (0.1%)
+wikipedia:DFS (furniture retailer): 1 (0.1%)
+wikipedia:Moving sofa problem: 1 (0.1%)
+wikipedia:Hoosier cabinet: 1 (0.1%)
+wikipedia:Shaker furniture: 1 (0.1%)
+wikipedia:Shelf (storage): 1 (0.1%)
+wikipedia:32 mm cabinetmaking system: 1 (0.1%)
+wikipedia:Desk: 1 (0.1%)
+wikipedia:Hoover desk: 1 (0.1%)
+wikipedia:Theodore Roosevelt desk: 1 (0.1%)
+wikipedia:Close stool: 1 (0.1%)
+wikipedia:Human furniture: 1 (0.1%)
+wikipedia:Bench (furniture): 1 (0.1%)
+wikipedia:Settle (furniture): 1 (0.1%)
+wikipedia:Wardrobe: 1 (0.1%)
+wikipedia:Wardrobe (clothing): 1 (0.1%)
+wikipedia:Alexandre de Betak: 1 (0.1%)
+wikipedia:The Coffee Table: 1 (0.1%)
+wikipedia:Coffee table: 1 (0.1%)
+wikipedia:Dining table: 1 (0.1%)
+wikipedia:Dining room: 1 (0.1%)
+wikipedia:Nightstand: 1 (0.1%)
+
+=== 屬性統計 ===
+
+COLORS:
+  red: 80
+  copper: 63
+  gold: 35
+  brown: 33
+  black: 32
+  grey: 32
+  cream: 31
+  blue: 30
+  gray: 30
+  silver: 29
+
+MATERIALS:
+  wood: 73
+  copper: 63
+  wicker: 63
+  rattan: 57
+  stone: 54
+  acrylic: 52
+  brass: 51
+  plastic: 51
+  marble: 51
+  velvet: 50
+
+FUNCTIONS:
+  dining: 130
+  sleeping: 35
+  decorative: 33
+  seating: 29
+  organization: 27
+  storage: 25
+  display: 24
+  reading: 24
+  lighting: 24
+  working: 23
+
+SIZES:
+  king: 32
+  large: 7
+  small: 3
+  queen: 1
+  single: 1
+  double: 1
+  compact: 1
+
+STYLES:
+  modern: 274
+  contemporary: 218
+  vintage: 48
+  colonial: 47
+  zen: 46
+  industrial: 46
+  baroque: 46
+  victorian: 45
+  bohemian: 44
+  country: 44
+
+SHAPES:
+  angular: 42
+  rectangular: 22
+  linear: 20
+  curved: 19
+  circular: 18
+  round: 17
+  organic: 16
+  square: 15
+  geometric: 15
+  straight: 10
