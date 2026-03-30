@@ -27,6 +27,7 @@ import torch.utils.data
 import torch.utils.data.distributed
 import torchvision.transforms as transforms
 import collections
+from tqdm import tqdm
 
 from torch.nn.parameter import Parameter
 import models.ULIP_models as models
@@ -313,7 +314,9 @@ def train(train_loader, model, criterion, optimizer, scaler, epoch, lr_schedule,
     end = time.time()
     
     iters_per_epoch = len(train_loader)
-    for i, batch_data in enumerate(train_loader):
+    pbar = tqdm(train_loader, desc=f"Epoch {epoch}", ncols=120,
+                bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]')
+    for i, batch_data in enumerate(pbar):
         data_time.update(time.time() - end)
         if batch_data is None: continue
         
@@ -369,6 +372,8 @@ def train(train_loader, model, criterion, optimizer, scaler, epoch, lr_schedule,
         end = time.time()
         mem.update(torch.cuda.max_memory_allocated() / 1e9)
 
+        pbar.set_postfix(loss=f"{metrics['loss'].avg:.4f}",
+                         acc=f"{metrics.get('enhanced_image_acc', metrics.get('ulip_pc_image_acc', AverageMeter('x'))).avg:.1f}%")
         if i % args.print_freq == 0:
             progress.display(i)
             

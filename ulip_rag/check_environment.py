@@ -93,7 +93,7 @@ def main():
     # 5. 檢查data模組
     print_section("5. 檢查數據模組")
     try:
-        sys.path.insert(0, '/mnt/data1/cheng/ULIP/data')
+        sys.path.insert(0, '/home/kyzen/ULIP_RAG/ulip_rag')
         from data.dataset_3d import Dataset_3D, rag_collate_fn, customized_collate_fn
         print("✓ dataset_3d 模組導入成功")
         print("✓ Dataset_3D 類別可用")
@@ -106,7 +106,7 @@ def main():
     # 6. 檢查模型模組
     print_section("6. 檢查模型模組")
     try:
-        sys.path.insert(0, '/home/kyzen/cheng/ulip_rag')
+        sys.path.insert(0, '/home/kyzen/ULIP_RAG/ulip_rag')
         import models.ULIP_models as models
         print("✓ ULIP_models 模組導入成功")
         
@@ -134,14 +134,14 @@ def main():
     import os
     
     paths_to_check = [
-        ("/mnt/data1/cheng/ULIP/data/data/dataset_3d.py", "dataset_3d.py"),
-        ("/mnt/data1/cheng/ULIP/data/data/rag_corpus/rag_corpus.jsonl", "RAG語料庫"),
-        ("/mnt/data1/cheng/ULIP/data/data/rag_corpus/corpus_index.faiss", "FAISS索引"),
-        ("/mnt/data1/cheng/ULIP/data/data/dataset_catalog.json", "數據集目錄"),
-        ("/mnt/data1/cheng/ULIP/data/data/templates.json", "文本模板"),
-        ("/mnt/data1/cheng/ULIP/data/data/labels.json", "標籤文件"),
-        ("/home/kyzen/cheng/ulip_rag/main.py", "主訓練腳本"),
-        ("/home/kyzen/cheng/ulip_rag/test.py", "測試腳本"),
+        ("/home/kyzen/ULIP_RAG/ulip_rag/data/dataset_3d.py", "dataset_3d.py"),
+        ("/home/kyzen/ULIP_RAG/ulip_rag/data/rag_corpus/rag_corpus.jsonl", "RAG語料庫"),
+        ("/home/kyzen/ULIP_RAG/ulip_rag/data/rag_corpus/corpus_index.faiss", "FAISS索引"),
+        ("/home/kyzen/ULIP_RAG/ulip_rag/data/dataset_catalog.json", "數據集目錄"),
+        ("/home/kyzen/ULIP_RAG/ulip_rag/data/templates.json", "文本模板"),
+        ("/home/kyzen/ULIP_RAG/ulip_rag/data/labels.json", "標籤文件"),
+        ("/home/kyzen/ULIP_RAG/ulip_rag/main.py", "主訓練腳本"),
+        ("/home/kyzen/ULIP_RAG/ulip_rag/test.py", "測試腳本"),
     ]
     
     for path, name in paths_to_check:

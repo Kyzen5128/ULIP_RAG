@@ -1,143 +1,262 @@
 === RAG 語料庫統計報告 ===
 
-總條目數: 1134
-平均信心度: 0.688
+總條目數: 8256
+平均信心度: 0.718
 
 === 類別分布 ===
-cabinet: 84 (7.4%)
-bed: 73 (6.4%)
-lamp: 73 (6.4%)
-table: 72 (6.3%)
-wardrobe: 72 (6.3%)
-shelf: 71 (6.3%)
-bench: 70 (6.2%)
-chair: 69 (6.1%)
-desk: 69 (6.1%)
-bookshelf: 69 (6.1%)
-sofa: 67 (5.9%)
-dresser: 66 (5.8%)
-stool: 61 (5.4%)
-coffee table: 61 (5.4%)
-armchair: 57 (5.0%)
-nightstand: 52 (4.6%)
-dining table: 48 (4.2%)
+cabinet: 331 (4.0%)
+bed: 320 (3.9%)
+chair: 317 (3.8%)
+shelf: 316 (3.8%)
+lamp: 315 (3.8%)
+wardrobe: 315 (3.8%)
+bench: 314 (3.8%)
+table: 311 (3.8%)
+desk: 305 (3.7%)
+sofa: 300 (3.6%)
+stool: 299 (3.6%)
+credenza: 296 (3.6%)
+loveseat: 293 (3.5%)
+dresser: 290 (3.5%)
+bookshelf: 284 (3.4%)
+sideboard: 281 (3.4%)
+coffee table: 278 (3.4%)
+ottoman: 274 (3.3%)
+futon: 274 (3.3%)
+armchair: 270 (3.3%)
+nightstand: 267 (3.2%)
+recliner: 265 (3.2%)
+dining table: 259 (3.1%)
+couch: 254 (3.1%)
+console table: 252 (3.1%)
+rocking chair: 247 (3.0%)
+accent chair: 247 (3.0%)
+office chair: 245 (3.0%)
+bar stool: 237 (2.9%)
 
 === 來源分布 ===
-synthetic: 1063 (93.7%)
-wikipedia:List of furniture types: 4 (0.4%)
-wikipedia:Sofa bed: 3 (0.3%)
-wikipedia:Kitchen cabinet: 3 (0.3%)
-wikipedia:Partners desk: 3 (0.3%)
-wikipedia:Chair: 2 (0.2%)
-wikipedia:Dressing table: 2 (0.2%)
-wikipedia:Davenport (sofa): 2 (0.2%)
-wikipedia:Bed: 2 (0.2%)
-wikipedia:Murphy bed: 2 (0.2%)
-wikipedia:Cabinetry: 2 (0.2%)
-wikipedia:Bathroom cabinet: 2 (0.2%)
-wikipedia:Akari (lamp): 2 (0.2%)
-wikipedia:Oil lamp: 2 (0.2%)
-wikipedia:Stool (seat): 2 (0.2%)
-wikipedia:Ducking stool: 2 (0.2%)
-wikipedia:Monks bench: 2 (0.2%)
-wikipedia:Welsh dresser: 2 (0.2%)
-wikipedia:Irish dresser: 2 (0.2%)
-wikipedia:Bookcase: 2 (0.2%)
-wikipedia:Noguchi table: 2 (0.2%)
-wikipedia:Garden furniture: 1 (0.1%)
-wikipedia:Love chair: 1 (0.1%)
-wikipedia:Chinese furniture: 1 (0.1%)
-wikipedia:Table (furniture): 1 (0.1%)
-wikipedia:Furniture: 1 (0.1%)
-wikipedia:DFS (furniture retailer): 1 (0.1%)
-wikipedia:Moving sofa problem: 1 (0.1%)
-wikipedia:Hoosier cabinet: 1 (0.1%)
-wikipedia:Shaker furniture: 1 (0.1%)
-wikipedia:Shelf (storage): 1 (0.1%)
-wikipedia:32 mm cabinetmaking system: 1 (0.1%)
-wikipedia:Desk: 1 (0.1%)
-wikipedia:Hoover desk: 1 (0.1%)
-wikipedia:Theodore Roosevelt desk: 1 (0.1%)
-wikipedia:Close stool: 1 (0.1%)
-wikipedia:Human furniture: 1 (0.1%)
-wikipedia:Bench (furniture): 1 (0.1%)
-wikipedia:Settle (furniture): 1 (0.1%)
-wikipedia:Wardrobe: 1 (0.1%)
-wikipedia:Wardrobe (clothing): 1 (0.1%)
-wikipedia:Alexandre de Betak: 1 (0.1%)
-wikipedia:The Coffee Table: 1 (0.1%)
-wikipedia:Coffee table: 1 (0.1%)
-wikipedia:Dining table: 1 (0.1%)
-wikipedia:Dining room: 1 (0.1%)
-wikipedia:Nightstand: 1 (0.1%)
+synthetic: 8033 (97.3%)
+wikipedia:List of furniture types: 8 (0.1%)
+wikipedia:Eames Lounge Chair: 5 (0.1%)
+wikipedia:Sofa bed: 5 (0.1%)
+wikipedia:Kitchen cabinet: 5 (0.1%)
+wikipedia:Model 60 stacking stool: 5 (0.1%)
+wikipedia:Dressing table: 4 (0.0%)
+wikipedia:Ducking stool: 4 (0.0%)
+wikipedia:Utility bench: 4 (0.0%)
+wikipedia:Mother, Couch: 4 (0.0%)
+wikipedia:Chair: 3 (0.0%)
+wikipedia:Table (furniture): 3 (0.0%)
+wikipedia:Davenport (sofa): 3 (0.0%)
+wikipedia:Bed: 3 (0.0%)
+wikipedia:Bed frame: 3 (0.0%)
+wikipedia:Filing cabinet: 3 (0.0%)
+wikipedia:China cabinet: 3 (0.0%)
+wikipedia:Floating shelf: 3 (0.0%)
+wikipedia:Oil lamp: 3 (0.0%)
+wikipedia:Fluorescent-lamp formats: 3 (0.0%)
+wikipedia:Partners desk: 3 (0.0%)
+wikipedia:Computer desk: 3 (0.0%)
+wikipedia:List of Oval Office desks: 3 (0.0%)
+wikipedia:Stool (seat): 3 (0.0%)
+wikipedia:Fainting couch: 3 (0.0%)
+wikipedia:Credenza desk: 3 (0.0%)
+wikipedia:A Taxonomy of Office Chairs: 3 (0.0%)
+wikipedia:World's Largest Office Chair: 3 (0.0%)
+wikipedia:Barcelona chair: 2 (0.0%)
+wikipedia:Furniture: 2 (0.0%)
+wikipedia:Human furniture: 2 (0.0%)
+wikipedia:Couch: 2 (0.0%)
+wikipedia:Moving sofa problem: 2 (0.0%)
+wikipedia:Herman Miller: 2 (0.0%)
+wikipedia:Ottoman (furniture): 2 (0.0%)
+wikipedia:Knole settee: 2 (0.0%)
+wikipedia:Murphy bed: 2 (0.0%)
+wikipedia:Four-poster bed: 2 (0.0%)
+wikipedia:Cabinetry: 2 (0.0%)
+wikipedia:Hoosier cabinet: 2 (0.0%)
+wikipedia:Akari (lamp): 2 (0.0%)
+wikipedia:Anglepoise lamp: 2 (0.0%)
+wikipedia:OpenDesk: 2 (0.0%)
+wikipedia:Theodore Roosevelt desk: 2 (0.0%)
+wikipedia:Secretary desk: 2 (0.0%)
+wikipedia:Bench (furniture): 2 (0.0%)
+wikipedia:Memorial bench: 2 (0.0%)
+wikipedia:Monks bench: 2 (0.0%)
+wikipedia:Settle (furniture): 2 (0.0%)
+wikipedia:Welsh dresser: 2 (0.0%)
+wikipedia:Irish dresser: 2 (0.0%)
+wikipedia:Wardrobe (clothing): 2 (0.0%)
+wikipedia:Bookcase: 2 (0.0%)
+wikipedia:Coffee table: 2 (0.0%)
+wikipedia:The Coffee Table: 2 (0.0%)
+wikipedia:Noguchi table: 2 (0.0%)
+wikipedia:Dining table: 2 (0.0%)
+wikipedia:"Dragons" armchair: 2 (0.0%)
+wikipedia:Commode: 2 (0.0%)
+wikipedia:Sunlounger: 2 (0.0%)
+wikipedia:Tom Sachs: 2 (0.0%)
+wikipedia:Kotatsu: 2 (0.0%)
+wikipedia:Sideboard: 2 (0.0%)
+wikipedia:Credenza: 2 (0.0%)
+wikipedia:Isokon: 2 (0.0%)
+wikipedia:Rocking chair: 2 (0.0%)
+wikipedia:Garden furniture: 1 (0.0%)
+wikipedia:Love chair: 1 (0.0%)
+wikipedia:Chinese furniture: 1 (0.0%)
+wikipedia:Vladimir Putin's meeting table: 1 (0.0%)
+wikipedia:DFS (furniture retailer): 1 (0.0%)
+wikipedia:Bed hangings: 1 (0.0%)
+wikipedia:Bathroom cabinet: 1 (0.0%)
+wikipedia:Shaker furniture: 1 (0.0%)
+wikipedia:John Evelyn's cabinet: 1 (0.0%)
+wikipedia:Shelf (storage): 1 (0.0%)
+wikipedia:Drawer: 1 (0.0%)
+wikipedia:32 mm cabinetmaking system: 1 (0.0%)
+wikipedia:Hat shelf: 1 (0.0%)
+wikipedia:Angle bracket (fastener): 1 (0.0%)
+wikipedia:Arco (lamp): 1 (0.0%)
+wikipedia:Desk: 1 (0.0%)
+wikipedia:Hoover desk: 1 (0.0%)
+wikipedia:Close stool: 1 (0.0%)
+wikipedia:Camden bench: 1 (0.0%)
+wikipedia:Set dresser: 1 (0.0%)
+wikipedia:Chest of drawers: 1 (0.0%)
+wikipedia:Wardrobe: 1 (0.0%)
+wikipedia:Tallboy (furniture): 1 (0.0%)
+wikipedia:Wardrobe (government): 1 (0.0%)
+wikipedia:Alexandre de Betak: 1 (0.0%)
+wikipedia:Live edge: 1 (0.0%)
+wikipedia:Dining room: 1 (0.0%)
+wikipedia:Trestle table: 1 (0.0%)
+wikipedia:Louis XIV furniture: 1 (0.0%)
+wikipedia:Nightstand: 1 (0.0%)
+wikipedia:Bedroom: 1 (0.0%)
+wikipedia:Recliner: 1 (0.0%)
+wikipedia:Barcalounger: 1 (0.0%)
+wikipedia:La-Z-Boy: 1 (0.0%)
+wikipedia:Divan (furniture): 1 (0.0%)
+wikipedia:Loveseat: 1 (0.0%)
+wikipedia:Canapé à confidante: 1 (0.0%)
+wikipedia:Sideboard (Edward William Godwin): 1 (0.0%)
+wikipedia:Buffet: 1 (0.0%)
+wikipedia:Madia (furniture): 1 (0.0%)
+wikipedia:Gustav Stickley: 1 (0.0%)
+wikipedia:Pier table: 1 (0.0%)
+wikipedia:Poker table: 1 (0.0%)
+wikipedia:Louis XVI furniture: 1 (0.0%)
+wikipedia:Footstool: 1 (0.0%)
+wikipedia:Aeron chair: 1 (0.0%)
+wikipedia:List of chairs: 1 (0.0%)
+wikipedia:Papasan chair: 1 (0.0%)
+wikipedia:Cabriole leg: 1 (0.0%)
 
 === 屬性統計 ===
 
+SIZES:
+  king: 664
+  low: 328
+  single: 319
+  oversized: 166
+  spacious: 159
+  double: 155
+  large: 150
+  twin: 149
+  tall: 141
+  queen: 138
+
 COLORS:
-  red: 80
-  copper: 63
-  gold: 35
-  brown: 33
-  black: 32
-  grey: 32
-  cream: 31
-  blue: 30
-  gray: 30
-  silver: 29
+  red: 688
+  light: 431
+  copper: 384
+  navy: 195
+  ebony: 194
+  brown: 194
+  bronze: 192
+  gold: 189
+  grey: 185
+  white: 184
 
 MATERIALS:
-  wood: 73
-  copper: 63
-  wicker: 63
-  rattan: 57
-  stone: 54
-  acrylic: 52
-  brass: 51
-  plastic: 51
-  marble: 51
-  velvet: 50
+  wood: 476
+  copper: 384
+  walnut: 344
+  brass: 194
+  bamboo: 190
+  wicker: 185
+  mahogany: 182
+  pine: 179
+  rattan: 179
+  upholstered: 177
 
 FUNCTIONS:
-  dining: 130
-  sleeping: 35
-  decorative: 33
-  seating: 29
-  organization: 27
-  storage: 25
-  display: 24
-  reading: 24
-  lighting: 24
-  working: 23
+  dining: 767
+  lighting: 269
+  working: 267
+  gathering: 267
+  storage: 265
+  organization: 263
+  conversation: 262
+  reading: 254
+  sleeping: 250
+  display: 247
 
-SIZES:
-  king: 32
-  large: 7
-  small: 3
-  queen: 1
-  single: 1
-  double: 1
-  compact: 1
+ROOMS:
+  office: 818
+  bedroom: 621
+  study: 341
+  master bedroom: 328
+  children's room: 322
+  patio: 318
+  kitchen: 318
+  bathroom: 313
+  guest room: 301
+  hallway: 300
 
 STYLES:
-  modern: 274
-  contemporary: 218
-  vintage: 48
-  colonial: 47
-  zen: 46
-  industrial: 46
-  baroque: 46
-  victorian: 45
-  bohemian: 44
-  country: 44
+  modern: 631
+  contemporary: 396
+  luxury: 223
+  coastal: 161
+  japanese: 149
+  french_country: 147
+  colonial: 142
+  baroque: 142
+  korean: 141
+  victorian: 141
+
+PLACEMENTS:
+  corner: 737
+  center: 566
+  wall-mounted: 310
+  freestanding: 309
+  near the entrance: 307
+  against the wall: 305
+  by the window: 290
+  next to the sofa: 288
+  in the center of the room: 281
+  beside the bed: 277
+
+CAPACITIES:
+  family-sized: 233
+  group: 226
+  eight-person: 219
+  couples: 212
+  individual: 205
+  two-person: 203
+  four-person: 202
+  three-person: 196
+  single-person: 191
+  six-person: 191
 
 SHAPES:
-  angular: 42
-  rectangular: 22
-  linear: 20
-  curved: 19
-  circular: 18
-  round: 17
-  organic: 16
-  square: 15
-  geometric: 15
-  straight: 10
+  angular: 187
+  circular: 106
+  straight: 100
+  curved: 94
+  oval: 93
+  sectional: 92
+  modular: 92
+  square: 92
+  rectangular: 90
+  linear: 89

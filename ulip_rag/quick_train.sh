@@ -11,7 +11,7 @@ echo "======================================"
 # 檢查環境
 echo "📋 Step 1: 檢查環境..."
 conda activate ulip_rag
-cd /home/kyzen/cheng/ulip_rag
+cd /home/kyzen/ULIP_RAG/ulip_rag
 
 # 環境驗證
 python check_environment.py || { echo "❌ 環境檢查失敗！請先修復環境問題。"; exit 1; }

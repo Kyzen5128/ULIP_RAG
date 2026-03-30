@@ -9,7 +9,7 @@ import torch
 import numpy as np
 
 # 添加必要的路徑
-sys.path.insert(0, '/home/kyzen/cheng/ulip_rag')
+sys.path.insert(0, '/home/kyzen/ULIP_RAG/ulip_rag')
 sys.path.insert(0, '/mnt/data1/cheng/ULIP/data')
 
 print("=" * 60)

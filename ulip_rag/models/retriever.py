@@ -72,8 +72,8 @@ class DenseRetriever:
 if __name__ == '__main__':
     # 假設您已在 ULIP/data/rag_corpus/ 中生成了檔案
     retriever = DenseRetriever(
-        corpus_path='/home/klooom/cheng/3d_retrival/ULIP/data/rag_corpus/rag_corpus.jsonl',
-        index_path='/home/klooom/cheng/3d_retrival/ULIP/data/rag_corpus/corpus_index.faiss'
+        corpus_path='/home/kyzen/ULIP_RAG/ulip_rag/rag_corpus/rag_corpus.jsonl',
+        index_path='/home/kyzen/ULIP_RAG/ulip_rag/rag_corpus/corpus_index.faiss'
     )
     
     test_query = "a modern wooden chair with armrests"

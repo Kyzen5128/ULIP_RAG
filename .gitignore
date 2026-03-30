@@ -33,3 +33,9 @@ venv/
 env/
 data/
 data
+
+# FAISS index (large binary)
+*.faiss
+
+# Experiment outputs
+wandb/

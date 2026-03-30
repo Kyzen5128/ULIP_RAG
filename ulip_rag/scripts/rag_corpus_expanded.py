@@ -2,8 +2,8 @@ import json
 from transformers import AutoTokenizer
 from tqdm import tqdm
 
-input_path = "/home/klooom/cheng/3d_retrival/tricolo/data/text2shape-data/chair_table/rag_corpus/rag_corpus.jsonl"
-output_path = "/home/klooom/cheng/3d_retrival/tricolo/data/text2shape-data/chair_table/rag_corpus/rag_corpus_tokenized.jsonl"
+input_path = "/home/kyzen/ULIP_RAG/ulip_rag/rag_corpus/rag_corpus.jsonl"
+output_path = "/home/kyzen/ULIP_RAG/ulip_rag/rag_corpus/rag_corpus_tokenized.jsonl"
 
 # === 選擇模型分詞器 ===
 tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
