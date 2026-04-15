@@ -1,0 +1,11 @@
+NAME: IkeaULIP
+JSON_DIR: /mnt/P300/data/ikea_data/json
+SPLIT_METHOD: hash      # hash / filelist / fixed
+TRAIN_RATIO: 1.0
+REQUIRE_IMAGE: false
+RENDER_PICK: random     # random / fixed_000 / fixed_012 ...（若你要固定角度）
+MIN_POINTS: 8192
+
+PC_SAMPLER: fps       # 或 random
+AUGMENT: true         # 只在 train 時才會生效
+PAD_IF_SHORT: true

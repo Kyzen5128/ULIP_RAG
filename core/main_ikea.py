@@ -1,0 +1,1 @@
+/home/kyzen/ULIP_RAG/ikea/main_ikea.py
