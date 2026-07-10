@@ -416,13 +416,20 @@ def main():
     if args.eval_rag_quality and args.use_rag_adapter:
         print("Using RAG collate function for RAG quality evaluation.")
         collate_fn = rag_collate_fn
-    elif args.eval_cross_modal or args.eval_zero_shot:
+    elif args.eval_cross_modal:
         if args.use_rag_adapter:
-            print("Using RAG collate function for cross-modal/zero-shot evaluation.")
+            print("Using RAG collate function for cross-modal evaluation.")
             collate_fn = rag_collate_fn
         else:
-            print("Using simple collate function for cross-modal/zero-shot evaluation.")
+            print("Using simple collate function for cross-modal evaluation.")
             collate_fn = simple_cross_modal_collate_fn
+    elif args.eval_zero_shot:
+        # 2026-07-10 修:zero-shot 走 main.test_zeroshot_3d_core,其期望「預設 collate」
+        # 的 (pc, target, target_name) 批次(見 main.py 內 len(data_tuple)==3 分支;
+        # main.py 的 val_loader 本來就不掛 collate_fn)。原本對 use_rag_adapter 硬掛
+        # rag_collate_fn,會把 ModelNet 的 int32 label 當文字 torch.stack 而 TypeError。
+        print("Using default collate for zero-shot evaluation (same as main.py val_loader).")
+        collate_fn = None
     else:
         print("Using standard collate function as fallback.")
         collate_fn = customized_collate_fn
