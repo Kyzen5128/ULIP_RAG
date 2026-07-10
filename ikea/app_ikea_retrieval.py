@@ -54,13 +54,15 @@ from utils.tokenizer import SimpleTokenizer
 from utils import utils as U  # has get_model()
 
 # --------- config via env ---------
-VEC_DIR = os.getenv("VEC_DIR", "/mnt/data1/ikea_data/vectors")
-CKPT    = os.getenv("CKPT",    "/home/klooom/cheng/3d_retrival/ULIP/outputs/ULIP2_ikea_b/checkpoint_last.pt")
+# 2026-07-10 第三階段:預設值從 4090 舊路徑(/mnt/data1、/home/klooom)改為 3090 現行路徑。
+# env 仍可覆寫(run_app_3090.sh 會設);忘掛 env 時不再靜默指向不存在的 4090 路徑。
+VEC_DIR = os.getenv("VEC_DIR", "/mnt/P300/data/ikea_data/vectors")
+CKPT    = os.getenv("CKPT",    "/mnt/P300/data/ULIP/checkpoint_last.pt")
 DEVICE  = "cuda" if (os.getenv("DEVICE", "cuda") == "cuda" and torch.cuda.is_available()) else "cpu"
 
 # 兩個根資料夾（取代以前的 ASSET_BASE/ulip_output & test_output）
-ULIP_OUTPUT   = os.getenv("ULIP_OUTPUT",   "/mnt/data1/ikea_data")     # 以前的 ulip_output
-CUSTOM_OUTPUT = os.getenv("CUSTOM_OUTPUT", "/mnt/data1/custom_data")   # 以前的 test_output
+ULIP_OUTPUT   = os.getenv("ULIP_OUTPUT",   "/mnt/P300/data/ikea_data")    # 以前的 ulip_output
+CUSTOM_OUTPUT = os.getenv("CUSTOM_OUTPUT", "/mnt/P300/data/custom_data")  # 以前的 test_output
 
 # 臨時、上傳與輸出都放在 CUSTOM_OUTPUT
 TMP_DIR    = os.getenv("TMP_DIR",    os.path.join(CUSTOM_OUTPUT, "tmp"))

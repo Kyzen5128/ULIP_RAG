@@ -23,6 +23,9 @@ import json
 from tqdm import tqdm
 import pickle
 from PIL import Image
+import os as _os_anchor
+# 2026-07-10 第三階段:以本檔位置錨定 core/ 根目錄,消除「必須 cwd=core」的隱性依賴
+_CORE_DIR = _os_anchor.path.dirname(_os_anchor.path.dirname(_os_anchor.path.abspath(__file__)))
 
 def pil_loader(path):
     # open path as file to avoid ResourceWarning (https://github.com/python-pillow/Pillow/issues/835)
@@ -329,7 +332,7 @@ class ModelNet(data.Dataset):
 #         with open(self.id_map_addr, 'r') as f:
 #             self.id_map = json.load(f)
 
-#         self.prompt_template_addr = os.path.join('./data/configs/templates.json')
+#         self.prompt_template_addr = os.path.join(_CORE_DIR, 'data/configs/templates.json')
 #         with open(self.prompt_template_addr) as f:
 #             self.templates = json.load(f)[config.pretrain_dataset_prompt]
 
@@ -513,7 +516,7 @@ class ShapeNet(data.Dataset):
         with open(self.id_map_addr, 'r') as f:
             self.id_map = json.load(f)
 
-        self.prompt_template_addr = os.path.join('./data/configs/templates.json')
+        self.prompt_template_addr = os.path.join(_CORE_DIR, 'data/configs/templates.json')
         with open(self.prompt_template_addr) as f:
             self.templates = json.load(f)[config.pretrain_dataset_prompt]
 
@@ -708,8 +711,8 @@ class Objaverse_Lvis_Colored(data.Dataset):
         self.tokenizer = config.tokenizer
         self.train_transform = config.train_transform
 
-        self.lvis_list_addr = 'data/objaverse-lvis/lvis.json'
-        self.lvis_metadata_addr = 'data/objaverse-lvis/objaverse_lvis_metadata.json'
+        self.lvis_list_addr = os.path.join(_CORE_DIR, 'data/objaverse-lvis/lvis.json')
+        self.lvis_metadata_addr = os.path.join(_CORE_DIR, 'data/objaverse-lvis/objaverse_lvis_metadata.json')
 
         with open(self.lvis_list_addr, 'r') as f:
             self.npy_file_map = json.load(f)
@@ -719,7 +722,7 @@ class Objaverse_Lvis_Colored(data.Dataset):
         with open(self.lvis_metadata_addr, 'r') as f:
             self.lvis_metadata = json.load(f)
 
-        self.prompt_template_addr = 'data/configs/templates.json'
+        self.prompt_template_addr = os.path.join(_CORE_DIR, 'data/configs/templates.json')
         with open(self.prompt_template_addr) as f:
             self.templates = json.load(f)[config.pretrain_dataset_prompt]
 
@@ -734,7 +737,7 @@ class Objaverse_Lvis_Colored(data.Dataset):
         self.use_height = False
         self.use_color = True
         
-        self.objaverse_lvis_path = 'data/objaverse-lvis'
+        self.objaverse_lvis_path = os.path.join(_CORE_DIR, 'data/objaverse-lvis')
         
         if self.use_color:
             print("use color")
@@ -953,7 +956,7 @@ class Dataset_3D():
             self.dataset_name = args.validate_dataset_name
         else:
             raise ValueError("not supported dataset type.")
-        with open('./data/configs/dataset_catalog.json', 'r') as f:
+        with open(os.path.join(_CORE_DIR, 'data/configs/dataset_catalog.json'), 'r') as f:
             self.dataset_catalog = json.load(f)
             self.dataset_usage = self.dataset_catalog[self.dataset_name]['usage']
             self.dataset_split = self.dataset_catalog[self.dataset_name][self.dataset_usage]
@@ -973,6 +976,9 @@ class Dataset_3D():
         self.build_3d_dataset(args, self.dataset_config_dir)
 
     def build_3d_dataset(self, args, config):
+        # catalog 內的 config 路徑多為 './data/configs/*.yaml',錨定到 core/ 根
+        if not os.path.isabs(config):
+            config = os.path.join(_CORE_DIR, config)
         config = cfg_from_yaml_file(config)
         config.tokenizer = self.tokenizer
         config.train_transform = self.train_transform

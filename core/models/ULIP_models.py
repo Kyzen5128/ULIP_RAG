@@ -13,6 +13,9 @@
 '''
 
 # Modified from github.com/openai/CLIP
+import os as _os_anchor
+# 2026-07-10 第三階段:錨定 core/ 根目錄,消除 cwd=core 依賴
+_CORE_DIR = _os_anchor.path.dirname(_os_anchor.path.dirname(_os_anchor.path.abspath(__file__)))
 from collections import OrderedDict
 
 import timm
@@ -324,7 +327,7 @@ def ULIP_PointBERT(args):
     # =====================================================================
     # import the 3D backbone and specify the output point cloud feature dimension
     from models.pointbert.point_encoder import PointTransformer
-    config_addr = './models/pointbert/PointTransformer_8192point.yaml'
+    config_addr = _os_anchor.path.join(_CORE_DIR, 'models/pointbert/PointTransformer_8192point.yaml')
     config = cfg_from_yaml_file(config_addr)
     point_encoder = PointTransformer(config.model, args=args)
     pc_feat_dims = 768
@@ -366,7 +369,7 @@ def ULIP2_PointBERT_Colored(args):
     # =====================================================================
     # import the 3D backbone and specify the output point cloud feature dimension
     from models.pointbert.point_encoder import PointTransformer, PointTransformer_Colored
-    config_addr = './models/pointbert/ULIP_2_PointBERT_10k_colored_pointclouds.yaml'
+    config_addr = _os_anchor.path.join(_CORE_DIR, 'models/pointbert/ULIP_2_PointBERT_10k_colored_pointclouds.yaml')
     config = cfg_from_yaml_file(config_addr)
     point_encoder = PointTransformer_Colored(config.model, args=args)
     pc_feat_dims = 768
@@ -683,7 +686,7 @@ class ULIP_Loss_RAG_Enhanced(nn.Module):
 # --- 2. RAG 特徵增強模型 ---
 class ULIP_with_RAG_Enhancer(ULIP_WITH_IMAGE):
     def __init__(self, *args, **kwargs):
-        rag_corpus_dir = kwargs.pop('rag_corpus_dir', 'data/rag_corpus')
+        rag_corpus_dir = kwargs.pop('rag_corpus_dir', None) or _os_anchor.path.join(_CORE_DIR, 'rag_corpus')  # 舊預設 data/rag_corpus 在 3090 不存在
         rag_top_k = kwargs.pop('rag_top_k', 5)
         # 必須在 super().__init__ 之前 pop,避免傳給父類
         super().__init__(*args, **kwargs)
@@ -775,7 +778,7 @@ def ULIP_PointBERT_RAG(args):
     from utils.config import cfg_from_yaml_file
     from models.pointbert.point_encoder import PointTransformer
     vision_model = timm.create_model('vit_base_patch16_224', num_classes=0)
-    config_addr = './models/pointbert/PointTransformer_8192point.yaml'
+    config_addr = _os_anchor.path.join(_CORE_DIR, 'models/pointbert/PointTransformer_8192point.yaml')
     config = cfg_from_yaml_file(config_addr)
     point_encoder = PointTransformer(config.model, args=args)
 

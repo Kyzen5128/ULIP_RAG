@@ -31,6 +31,8 @@ from tqdm import tqdm
 
 from torch.nn.parameter import Parameter
 import models.ULIP_models as models
+# 2026-07-10 第三階段:錨定 core/ 根目錄,消除 cwd=core 依賴
+_CORE_DIR = os.path.dirname(os.path.abspath(__file__))
 from utils.tokenizer import SimpleTokenizer
 from utils import utils
 import torch.distributed as dist
@@ -94,7 +96,7 @@ def get_args_parser():
     parser.add_argument('--training_strategy', type=str, default='staged_1',
                         choices=['staged_1', 'staged_2'],
                         help='Training strategy for Generative RAG.')
-    parser.add_argument('--rag_corpus_dir', type=str, default='data/rag_corpus', help='Path to RAG corpus and index.')
+    parser.add_argument('--rag_corpus_dir', type=str, default=None, help='Path to RAG corpus and index.(預設自動用 core/rag_corpus)')
     parser.add_argument('--rag_top_k', type=int, default=5, help='Number of documents to retrieve for RAG.')
     parser.add_argument('--freeze_backbone', action='store_true', help='(For RAG) Freeze backbone and train adapter only.')
     parser.add_argument('--stage1_ckpt_path', type=str, default=None,
@@ -394,14 +396,14 @@ def test_zeroshot_3d_core(test_loader, model, tokenizer, args=None):
     
     # 根據 args.validate_dataset_name 獲取標籤
     if 'objaverse' in args.validate_dataset_name.lower():
-        with open('data/objaverse-lvis/lvis.json', 'r') as f:
+        with open(os.path.join(_CORE_DIR, 'data/objaverse-lvis/lvis.json'), 'r') as f:
             lvis_data = json.load(f)
         labels = list(lvis_data.keys())
     else: # ModelNet40
-        with open("./data/configs/labels.json") as f:
+        with open(os.path.join(_CORE_DIR, "data/configs/labels.json")) as f:
             labels = json.load(f)[args.validate_dataset_name]
             
-    with open("./data/configs/templates.json") as f:
+    with open(os.path.join(_CORE_DIR, "data/configs/templates.json")) as f:
         templates = json.load(f)[args.validate_dataset_prompt]
 
     with torch.no_grad():

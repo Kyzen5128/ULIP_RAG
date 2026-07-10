@@ -32,6 +32,8 @@ from data.dataset_3d import *  # customized_collate_fn 等工具
 
 from utils.utils import get_dataset
 import models.ULIP_models as models
+# 2026-07-10 第三階段:以 models 套件位置錨定 core/ 根(本檔經 symlink 執行,__file__ 不可靠)
+_CORE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(models.__file__)))
 from utils.tokenizer import SimpleTokenizer
 from utils import utils
 from data.dataset_3d import customized_collate_fn
@@ -408,13 +410,13 @@ def test_zeroshot_3d_core(test_loader, model, tokenizer, args=None):
     print('=> encoding captions')
     # 修正：templates/labels 實際在 ./data/configs/（原寫 ./data/ 是 4090 舊扁平佈局遺留，
     # 在 3090 會 FileNotFoundError；IKEA 走六向檢索不經此路徑所以先前未觸發）
-    with open(os.path.join("./data/configs", 'templates.json')) as f:
+    with open(os.path.join(_CORE_DIR, "data/configs", "templates.json")) as f:
         templates = json.load(f)[args.validate_dataset_prompt]
 
     if 'objaverse' in args.validate_dataset_name.lower():
         labels = test_loader.dataset.lvis_metadata['all_keys']
     else:
-        with open(os.path.join("./data/configs", 'labels.json')) as f:
+        with open(os.path.join(_CORE_DIR, "data/configs", "labels.json")) as f:
             labels = json.load(f)[args.validate_dataset_name]
 
     with torch.no_grad():

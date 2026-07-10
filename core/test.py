@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 
 import models.ULIP_models as models
+_CORE_DIR = os.path.dirname(os.path.abspath(__file__))  # 2026-07-10 消除 cwd=core 依賴
 from utils.tokenizer import SimpleTokenizer
 from utils import utils
 from data.dataset_3d import Dataset_3D, rag_collate_fn, customized_collate_fn
@@ -276,7 +277,7 @@ def evaluate_cross_modal_retrieval(model, test_loader, args):
 
     # 編碼 label 對應的描述文字
     tokenizer = SimpleTokenizer()
-    with open("./data/configs/templates.json") as f:
+    with open(os.path.join(_CORE_DIR, "data/configs/templates.json")) as f:
         templates = json.load(f)[args.validate_dataset_prompt]
 
     text_features = []
@@ -334,7 +335,7 @@ def main():
     # RAG 參數
     parser.add_argument('--use_rag_adapter', action='store_true', help='Use RAG model')
     parser.add_argument('--training_strategy', type=str, default='staged_2', choices=['staged_1', 'staged_2'])
-    parser.add_argument('--rag_corpus_dir', type=str, default='data/rag_corpus')
+    parser.add_argument('--rag_corpus_dir', type=str, default=None)  # None→自動用 core/rag_corpus
     parser.add_argument('--rag_top_k', type=int, default=5)
     
     # 評估選項
