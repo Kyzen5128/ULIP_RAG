@@ -1,0 +1,291 @@
+# ulip env 實際凍結(pip freeze)— 2026-07-10 於 3090(edge05)產出
+# Python 3.9.23 / CUDA 12.8 / RTX 3090 Ti。本檔為環境重建的真實依據;
+# 舊 requirements.txt 版本號過時僅供參考。local 路徑套件(pointnet2_ops 等)需照 docs 手動編譯。
+addict==2.4.0
+aiofiles==23.2.1
+aiohappyeyeballs==2.6.1
+aiohttp==3.12.13
+aiosignal==1.3.2
+annotated-types==0.7.0
+antlr4-python3-runtime==4.9.3
+anyio==4.10.0
+asttokens @ file:///home/conda/feedstock_root/build_artifacts/asttokens_1733250440834/work
+async-timeout==5.0.1
+asyncer==0.0.8
+attrs==25.3.0
+backcall @ file:///home/conda/feedstock_root/build_artifacts/backcall_1592338393461/work
+beautifulsoup4==4.13.4
+blinker==1.9.0
+blis==1.3.0
+catalogue==2.0.10
+ccimport==0.4.4
+certifi==2025.6.15
+charset-normalizer==3.4.2
+click==8.1.8
+clip @ git+https://github.com/openai/CLIP.git@dcba3cb2e2827b402d2701e7e1c7d9fed8a20ef1
+cloudpathlib==0.21.1
+coloredlogs==15.0.1
+comm @ file:///home/conda/feedstock_root/build_artifacts/comm_1733502965406/work
+confection==0.1.5
+ConfigArgParse==1.7.1
+contourpy==1.3.0
+cumm-cu113==0.4.11
+cumm-cu117==0.4.11
+cumm-cu118==0.7.11
+cycler==0.12.1
+cymem==2.0.11
+dash==3.0.4
+dataclasses-json==0.6.7
+debugpy @ file:///croot/debugpy_1736267418885/work
+decorator @ file:///home/conda/feedstock_root/build_artifacts/decorator_1740384970518/work
+Deprecated==1.2.18
+diff_gaussian_rasterization @ file:///tmp/extensions/mip-splatting/submodules/diff-gaussian-rasterization
+diffoctreerast @ file:///tmp/extensions/diffoctreerast
+dnspython==2.7.0
+easydict==1.13
+efficientnet_pytorch==0.7.1
+einops==0.8.1
+entrypoints @ file:///home/conda/feedstock_root/build_artifacts/entrypoints_1733327148154/work
+eval_type_backport==0.2.2
+exceptiongroup==1.3.0
+executing @ file:///home/conda/feedstock_root/build_artifacts/executing_1745502089858/work
+faiss-gpu==1.7.2
+fastapi==0.116.1
+fastjsonschema==2.21.1
+ffmpy==0.6.1
+filelock==3.13.1
+filetype==1.2.0
+fire==0.7.0
+Flask==3.0.3
+flatbuffers==25.2.10
+fonttools==4.58.4
+freetype-py==2.5.1
+frozenlist==1.7.0
+fsspec==2024.6.1
+ftfy==6.3.1
+gitdb==4.0.12
+GitPython==3.1.44
+glcontext==3.0.0
+gradio==4.44.1
+gradio_client==1.3.0
+greenlet==3.2.5
+h11==0.16.0
+h5py==3.14.0
+hf-xet==1.1.4
+httpcore==1.0.9
+httptools==0.6.4
+httpx==0.28.1
+huggingface-hub==0.33.0
+humanfriendly==10.0
+hydra-core==1.3.2
+idna==3.10
+igraph==0.11.9
+ikea_api==2.4.0
+imageio==2.37.0
+imageio-ffmpeg==0.6.0
+importlib_metadata==8.7.0
+importlib_resources==6.5.2
+ipycanvas==0.14.1
+ipyevents==2.0.2
+ipykernel @ file:///home/conda/feedstock_root/build_artifacts/ipykernel_1719845459717/work
+ipython @ file:///home/conda/feedstock_root/build_artifacts/ipython_1680185408135/work
+ipywidgets==8.1.7
+itsdangerous==2.2.0
+jedi @ file:///home/conda/feedstock_root/build_artifacts/jedi_1733300866624/work
+Jinja2==3.1.4
+joblib==1.5.1
+jsonlines==4.0.0
+jsonschema==4.24.0
+jsonschema-specifications==2025.4.1
+jupyter-client @ file:///home/conda/feedstock_root/build_artifacts/jupyter_client_1654730843242/work
+jupyter_core @ file:///home/conda/feedstock_root/build_artifacts/jupyter_core_1748333051527/work
+jupyterlab_widgets==3.0.15
+kagglehub==0.3.12
+kaolin @ file:///home/klooom/cheng/3d_retrival/ULIP/kaolin-0.18.0-cp39-cp39-linux_x86_64.whl#sha256=dd1fe753623b9a9ab180ae89438e065edd163f5920ba2433fe98f255daf414d2
+kiwisolver==1.4.7
+KNN-CUDA @ https://github.com/unlimblue/KNN_CUDA/releases/download/0.2/KNN_CUDA-0.2-py3-none-any.whl#sha256=809a43da2eed950c65ba15e355e8cdbf975b6a948dced1f02414f26aba586cd0
+langcodes==3.5.0
+language_data==1.3.0
+lark==1.2.2
+lazy_loader==0.4
+lightning==2.5.2
+lightning-utilities==0.14.3
+llvmlite==0.43.0
+marisa-trie==1.2.1
+markdown-it-py==3.0.0
+MarkupSafe==2.1.5
+marshmallow==3.26.1
+matplotlib==3.9.4
+matplotlib-inline @ file:///home/conda/feedstock_root/build_artifacts/matplotlib-inline_1733416936468/work
+mdurl==0.1.2
+moderngl==5.12.0
+mpmath==1.3.0
+multidict==6.6.2
+murmurhash==1.0.13
+mypy_extensions==1.1.0
+narwhals==1.43.0
+nbformat==5.10.4
+nest_asyncio @ file:///home/conda/feedstock_root/build_artifacts/nest-asyncio_1733325553580/work
+networkx==3.2.1
+ninja==1.11.1.4
+nltk==3.9.2
+numba==0.60.0
+numpy==1.26.4
+nvdiffrast @ file:///tmp/extensions/nvdiffrast
+nvidia-cublas-cu11==11.11.3.6
+nvidia-cublas-cu12==12.8.3.14
+nvidia-cuda-cupti-cu11==11.8.87
+nvidia-cuda-cupti-cu12==12.8.57
+nvidia-cuda-nvrtc-cu11==11.8.89
+nvidia-cuda-nvrtc-cu12==12.8.61
+nvidia-cuda-runtime-cu11==11.8.89
+nvidia-cuda-runtime-cu12==12.8.57
+nvidia-cudnn-cu11==9.1.0.70
+nvidia-cudnn-cu12==9.7.1.26
+nvidia-cufft-cu11==10.9.0.58
+nvidia-cufft-cu12==11.3.3.41
+nvidia-cufile-cu12==1.13.0.11
+nvidia-curand-cu11==10.3.0.86
+nvidia-curand-cu12==10.3.9.55
+nvidia-cusolver-cu11==11.4.1.48
+nvidia-cusolver-cu12==11.7.2.55
+nvidia-cusparse-cu11==11.7.5.86
+nvidia-cusparse-cu12==12.5.7.53
+nvidia-cusparselt-cu12==0.6.3
+nvidia-nccl-cu11==2.21.5
+nvidia-nccl-cu12==2.26.2
+nvidia-nvjitlink-cu12==12.8.61
+nvidia-nvtx-cu11==11.8.86
+nvidia-nvtx-cu12==12.8.55
+omegaconf==2.3.0
+onnxruntime==1.19.2
+open3d==0.19.0
+open_clip_torch==2.32.0
+opencv-python-headless==4.12.0.88
+orjson==3.11.3
+packaging @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_packaging_1745345660/work
+pandas==2.3.0
+parso @ file:///home/conda/feedstock_root/build_artifacts/parso_1733271261340/work
+pccm==0.4.16
+pexpect @ file:///home/conda/feedstock_root/build_artifacts/pexpect_1733301927746/work
+pickleshare @ file:///home/conda/feedstock_root/build_artifacts/pickleshare_1733327343728/work
+pillow==10.4.0
+platformdirs @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_platformdirs_1746710438/work
+playwright==1.58.0
+plotly==6.1.2
+plyfile==1.1.2
+pointnet2_ops @ file:///home/klooom/cheng/3d_retrival/ULIP/Pointnet2_PyTorch/pointnet2_ops_lib
+pooch==1.8.2
+portalocker==3.2.0
+preshed==3.0.10
+prompt_toolkit @ file:///home/conda/feedstock_root/build_artifacts/prompt-toolkit_1744724089886/work
+propcache==0.3.2
+protobuf==6.31.1
+psutil @ file:///croot/psutil_1736367091698/work
+ptyprocess @ file:///home/conda/feedstock_root/build_artifacts/ptyprocess_1733302279685/work/dist/ptyprocess-0.7.0-py2.py3-none-any.whl#sha256=92c32ff62b5fd8cf325bec5ab90d7be3d2a8ca8c8a3813ff487a8d2002630d1f
+pure_eval @ file:///home/conda/feedstock_root/build_artifacts/pure_eval_1733569405015/work
+pybind11==2.13.6
+pydantic==2.11.7
+pydantic_core==2.33.2
+pydub==0.25.1
+pyee==13.0.1
+pyglet==2.1.6
+pygltflib==1.16.5
+Pygments @ file:///home/conda/feedstock_root/build_artifacts/pygments_1736243443484/work
+PyMatting==1.1.14
+pymeshfix==0.17.1
+pymongo==4.16.0
+pynrrd==1.1.3
+PyOpenGL==3.1.0
+pyparsing==3.2.3
+pyquaternion==0.9.9
+pyrender==0.1.45
+python-dateutil @ file:///home/conda/feedstock_root/build_artifacts/python-dateutil_1733215673016/work
+python-dotenv==1.1.1
+python-multipart==0.0.20
+pytorch-lightning==2.5.2
+pytz==2025.2
+pyvista==0.46.3
+PyYAML==6.0.2
+pyzmq @ file:///croot/pyzmq_1734687138743/work
+referencing==0.36.2
+regex==2024.11.6
+rembg==2.0.61
+requests==2.32.4
+retrying==1.3.4
+rich==14.0.0
+rpds-py==0.25.1
+ruff==0.12.12
+safetensors==0.5.3
+scikit-image==0.24.0
+scikit-learn==1.6.1
+scipy==1.13.1
+scooby==0.10.1
+semantic-version==2.10.0
+sentence-transformers==4.1.0
+sentencepiece==0.2.0
+sentry-sdk==2.30.0
+setproctitle==1.3.6
+shellingham==1.5.4
+six @ file:///home/conda/feedstock_root/build_artifacts/six_1733380938961/work
+smart-open==7.1.0
+smmap==5.0.2
+sniffio==1.3.1
+soupsieve==2.7
+spacy==3.8.7
+spacy-legacy==3.0.12
+spacy-loggers==1.0.5
+spconv-cu117==2.3.6
+spconv-cu118==2.3.8
+srsly==2.5.1
+stack_data @ file:///home/conda/feedstock_root/build_artifacts/stack_data_1733569443808/work
+starlette==0.47.2
+sympy==1.13.3
+tabulate==0.9.0
+termcolor==3.1.0
+texttable==1.7.0
+thinc==8.3.6
+threadpoolctl==3.6.0
+tifffile==2024.8.30
+timm==1.0.15
+tokenizers==0.21.1
+tomlkit==0.12.0
+torch==2.7.1+cu128
+torchaudio==2.7.1+cu118
+torchmetrics==1.7.3
+torchvision==0.22.1+cu128
+tornado @ file:///home/conda/feedstock_root/build_artifacts/tornado_1648827245914/work
+tqdm==4.67.1
+traitlets @ file:///home/conda/feedstock_root/build_artifacts/traitlets_1733367359838/work
+transformers==4.52.4
+tricolo @ file:///home/klooom/cheng/3d_retrival/tricolo
+trimesh==4.6.13
+triton==3.3.1
+typer==0.16.0
+typing-inspect==0.9.0
+typing-inspection==0.4.1
+typing_extensions==4.12.2
+tzdata==2025.2
+urllib3==2.4.0
+usd-core==25.8
+utils3d @ git+https://github.com/EasternJournalist/utils3d.git@9a4eb15e4021b67b12c460c7057d642626897ec8
+uvicorn==0.39.0
+uvloop==0.21.0
+vtk==9.5.1
+wandb==0.20.1
+warp-lang==1.9.0
+wasabi==1.1.3
+watchdog==6.0.0
+watchfiles==1.1.0
+wcwidth @ file:///home/conda/feedstock_root/build_artifacts/wcwidth_1733231326287/work
+weasel==0.4.1
+websockets==12.0
+Werkzeug==3.0.6
+widgetsnbextension==4.0.14
+wikipedia==1.4.0
+wrapt==1.17.2
+xatlas==0.0.11
+xformers==0.0.31
+yarl==1.20.1
+zipp==3.23.0
+

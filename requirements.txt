@@ -1,3 +1,6 @@
+# ⚠️ 2026-07-10:本檔版本號為 4090 時代舊值,僅供參考。
+# 3090 實際環境凍結請看 requirements_3090_freeze.txt(pip freeze 產出,可信)。
+# 實測 timm 1.0.15 / torch 2.7.1+cu128 與 ULIP 相容,勿被本檔舊版本嚇到降級。
 # ULIP_RAG Environment Requirements
 # Python 3.9.25
 # CUDA 12.1
