@@ -526,10 +526,22 @@ class RAGEnhancer(nn.Module):
             nn.Linear(embed_dim * 2, embed_dim)
         )
 
-    def forward(self, original_feature_eot, doc_features):
+    def forward(self, original_feature_eot, doc_features, doc_padding_mask=None):
+        """
+        doc_padding_mask: [B, K] bool，True = 該位是補零 padding（檢索不足 top_k 時）。
+        修正：原版沒傳 key_padding_mask，全零 key 會參與 softmax、稀釋注意力。
+        不影響權重相容性（無新參數；舊 checkpoint 照常載入）。
+        """
         original_expanded = original_feature_eot.unsqueeze(1)
         context = torch.cat([original_expanded, doc_features], dim=1)
-        attn_output, _ = self.attention(original_expanded, context, context)
+        key_padding_mask = None
+        if doc_padding_mask is not None:
+            # context 第 0 位是 original 本身，永不遮罩；後 K 位依 doc_padding_mask
+            never_mask = torch.zeros(doc_padding_mask.size(0), 1,
+                                     dtype=torch.bool, device=doc_padding_mask.device)
+            key_padding_mask = torch.cat([never_mask, doc_padding_mask], dim=1)
+        attn_output, _ = self.attention(original_expanded, context, context,
+                                        key_padding_mask=key_padding_mask)
         fused = self.norm1(original_expanded + attn_output)
         fused = self.norm2(fused + self.ffn(fused))
         return fused.squeeze(1)
@@ -708,18 +720,21 @@ class ULIP_with_RAG_Enhancer(ULIP_WITH_IMAGE):
             doc_tokens = self.tokenizer(flat_docs).to(text_tokens.device)
             base_doc_features = self.encode_text_base(doc_tokens)
             
-            # 重新組織為 [B, K, D]
+            # 重新組織為 [B, K, D]，並記錄 padding 位置（True=補零）供 attention 遮罩
             k = self.retriever.top_k
             doc_features_padded = torch.zeros(len(raw_text_queries), k, base_doc_features.shape[1], device=base_doc_features.device)
+            doc_padding_mask = torch.ones(len(raw_text_queries), k,
+                                          dtype=torch.bool, device=base_doc_features.device)
             current_pos = 0
             for i, sublist in enumerate(retrieved_docs):
                 if sublist:
                     num_docs = len(sublist)
                     doc_features_padded[i, :num_docs] = base_doc_features[current_pos : current_pos + num_docs]
+                    doc_padding_mask[i, :num_docs] = False
                     current_pos += num_docs
-            
-            # 4. 使用 RAGEnhancer 注入知識,得到融合後的基礎特徵
-            fused_feature_eot = self.rag_enhancer(base_feature_eot, doc_features_padded)
+
+            # 4. 使用 RAGEnhancer 注入知識,得到融合後的基礎特徵（padding 位不參與 softmax）
+            fused_feature_eot = self.rag_enhancer(base_feature_eot, doc_features_padded, doc_padding_mask)
         else:
             # 如果沒有檢索到任何文件,則直接使用原始特徵
             fused_feature_eot = base_feature_eot

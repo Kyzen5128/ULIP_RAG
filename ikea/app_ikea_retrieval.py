@@ -1,4 +1,5 @@
 # app_ikea_retrieval.py
+#132
 import os
 os.environ['SPCONV_ALGO'] = 'native'
 os.environ['ATTN_BACKEND'] = 'xformers'

@@ -406,13 +406,15 @@ def test_zeroshot_3d_core(test_loader, model, tokenizer, args=None):
     model.eval()
 
     print('=> encoding captions')
-    with open(os.path.join("./data", 'templates.json')) as f:
+    # 修正：templates/labels 實際在 ./data/configs/（原寫 ./data/ 是 4090 舊扁平佈局遺留，
+    # 在 3090 會 FileNotFoundError；IKEA 走六向檢索不經此路徑所以先前未觸發）
+    with open(os.path.join("./data/configs", 'templates.json')) as f:
         templates = json.load(f)[args.validate_dataset_prompt]
 
     if 'objaverse' in args.validate_dataset_name.lower():
         labels = test_loader.dataset.lvis_metadata['all_keys']
     else:
-        with open(os.path.join("./data", 'labels.json')) as f:
+        with open(os.path.join("./data/configs", 'labels.json')) as f:
             labels = json.load(f)[args.validate_dataset_name]
 
     with torch.no_grad():

@@ -1,3 +1,8 @@
+# =====================================================================
+# ⚠️ DEPRECATED(2026-07-10 標記):本檔已無人 import(rg 全 repo 實測)。
+# 舊版 RAG 模型實驗(ULIP_RAG_ADAPTER / ULIP_Loss_RAG_Decoupled)。
+# 現役 RAG 實作在 core/models/ULIP_models.py:473-883。僅供歷史參考,勿修改勿引用。
+# =====================================================================
 '''
  * Copyright (c) 2023, salesforce.com, inc.
  * All rights reserved.

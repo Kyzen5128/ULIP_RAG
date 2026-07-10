@@ -265,6 +265,16 @@ class IkeaULIP(data.Dataset):
 
             # 點雲（必要）
             pc_path = self.resolver.resolve(data.get("pointcloud"))
+            # 優先使用預採樣版（ikea/presample_ply.py 產出的 <ply 同層>/ply_8192/<id>.ply）。
+            # 原始 gaussian PLY 每顆 33~67 萬點，numpy FPS 每筆 20-40s；
+            # 預採樣檔 N==npoints 會直接跳過 FPS，訓練 epoch 從小時級降到分鐘級。
+            # 若 ply_8192/ 不存在則維持原行為。
+            if pc_path:
+                _pre = os.path.join(os.path.dirname(os.path.dirname(pc_path)),
+                                    "ply_8192", os.path.basename(pc_path))
+                if _safe_isfile(_pre) and os.path.getsize(_pre) > 0:
+                    pc_path = _pre
+                    skip_stats["presampled_used"] = skip_stats.get("presampled_used", 0) + 1
             if not _safe_isfile(pc_path):
                 skip_stats["no_pointcloud"] = skip_stats.get("no_pointcloud", 0) + 1
                 continue
