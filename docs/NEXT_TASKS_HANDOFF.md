@@ -8,7 +8,8 @@
 
 ## 0. 鐵則（每次動手前）
 
-- conda env 一律 **`ulip`**（不是 ulip_rag）；跑任何 core 程式 **cwd 必須是 `/home/kyzen/ULIP_RAG/core`**（相對路徑 `./models/...`、`./data/configs/...` 綁 cwd）。
+- conda env 一律 **`ulip`**（不是 ulip_rag）。
+- **2026-07-10 起 cwd 不再受限**（第三階段已把 `./models/...`、`./data/configs/...` 等 15 處相對路徑以 `_CORE_DIR` 錨定絕對化,commit 0335d0c）；但 **PYTHONPATH 仍需含 `core/`**（import models/data/utils）。慣例上仍可 cwd=core。
 - 資料實體都在 `/mnt/P300/data`（repo 內 `storage`、`core/data/*` 是 symlink）。
 - 上線模型：`/mnt/P300/data/ULIP/checkpoint_last.pt`（純 ULIP_PointBERT，S2T R@1 76.5%）。
 - 檢索向量：`/mnt/P300/data/ikea_data/vectors/`（pc/img 733、txt 732——1 件空 caption 是設計跳過）。
@@ -40,9 +41,11 @@
 - **→ 直接做 Phase B**：在 `ikea/app_ikea_retrieval.py` 加 `filter_by_dimensions()`（ULIP Top-N → 讀 mongo 的 dimensions_mm → 尺寸過濾 → Top-K）。原則：尺寸住 metadata，不進模型。注意 app 需要能連 mongo（用 ~/.ulip_mongo.env 的 URI；serving 目前 USE_MONGO=0，Phase B 要開）。
 - Phase B：在 `ikea/app_ikea_retrieval.py` 加 `filter_by_dimensions()`（ULIP Top-N → 尺寸過濾 → Top-K）。原則：**尺寸住 metadata，不進模型**。
 
-### T3 🟡 git 整理（需使用者同意才 commit）
-- 現況：branch `3090`；staged＝ikea V3/PhaseA 批次；modified＝`app_ikea_retrieval.py`(+一行註解)、`dataset_catalog.json`；untracked＝`build_vectors.py`、`run_app_3090.sh`、`ikea_ulip_smoke.yaml`、docs 四份（PROJECT_REPORT_3090 / OLD_4090 / HANDOFF_ASK_4090 / HANDOFF_FOR_3090 / 本檔）。
-- 建議一次 commit 今天的修復＋文件。**先問使用者**。
+### T3 ✅ 已完成（2026-07-10,三階段整理全部收官並 push,共 11 commits: 083f959..f2a97f6）
+- 一階：.gitignore 裸 `data` 規則修正、40 檔納管（含 dataset_3d.py/catalog/faiss）、docs/INDEX.md、11 檔 DEPRECATED 註記、get_data 去明碼。
+- 二階：`ikea/mongo_conn.py` 統一連線（7 處硬編無認證 URI 消滅）、faiss 正名 `minilm_corpus_index.faiss`＋再生腳本 `rebuild_rag_index_minilm.py`（驗證 100% 等價）、6 孤兒歸檔 `core/_archive/`。
+- 三階：消滅 cwd=core 依賴（5 檔 15 處）、serving 預設路徑改 3090、`requirements_3090_freeze.txt`。
+- **mongo 用法（新）**：所有 ikea 腳本改 `from mongo_conn import get_client/get_mongo_uri`,憑證自動讀 `~/.ulip_mongo.env`,不需再手動 export。
 
 ### T4 🟢 選配
 - 研究線 RAG 評估：需從 4090 抓 `ULIP_RAG/outputs/RAG2_Stage2/checkpoint_best.pt` → 放 `core/outputs/RAG2_Stage2/` → 跑 `core/test.py`（指令見 PROJECT_REPORT_3090 §9）。

@@ -1,3 +1,5 @@
+> ⚠️ **過時警告(2026-07-10)**:本檔為 4090 時代文件。專案位置/env 名/路徑均已失效(現為 /home/kyzen/ULIP_RAG + conda ulip + /mnt/P300/data)。現況請看 docs/INDEX.md。
+
 # CAMERA Core 研究接手指南
 
 > 撰寫人：Claude（依 Kyzen 需求整理）

@@ -1,3 +1,5 @@
+> ⚠️ **過時警告(2026-07-10)**:本檔為 4090 時代文件。專案位置/env 名/路徑均已失效(現為 /home/kyzen/ULIP_RAG + conda ulip + /mnt/P300/data)。現況請看 docs/INDEX.md。
+
 # Claude Code 使用技巧指南
 
 > 給 Kyzen 的個人使用筆記

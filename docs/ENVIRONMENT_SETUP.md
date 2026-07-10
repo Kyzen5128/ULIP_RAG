@@ -1,3 +1,5 @@
+> ⚠️ **過時警告(2026-07-10)**:本檔為 4090 時代文件。專案位置/env 名/路徑均已失效(現為 /home/kyzen/ULIP_RAG + conda ulip + /mnt/P300/data)。現況請看 docs/INDEX.md。
+
 # ULIP_RAG 環境架設指南
 
 本文檔記錄了 ULIP_RAG 項目的完整環境架設步驟和所需依賴。

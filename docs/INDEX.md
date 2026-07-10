@@ -13,7 +13,7 @@
 | **core RAG 研究線** | ULIP + RAGRetriever/RAGEnhancer 兩階段訓練 | `core/` | ✅ 可訓練;stage ckpt 尚在 4090 |
 | **corpus 語料線** | WordNet/ConceptNet + Llama 生成語料(實驗) | `corpus/vocab_build/` | ⏸ 未接回 runtime,步驟 3/4 產物缺 |
 
-## 二、主流程入口(鐵則:conda env = `ulip`,core 程式 cwd 必須 = `core/`)
+## 二、主流程入口(鐵則:conda env = `ulip`;**2026-07-10 起 cwd 不再受限**,相對路徑已全部以 `_CORE_DIR` 錨定絕對化,但 PYTHONPATH 仍需含 `core/`)
 
 | 動作 | 指令 |
 |---|---|
@@ -55,9 +55,7 @@
 
 | 檔案 | 原因 |
 |---|---|
-| `core/models/ULIP_models_rag.py` | 舊版 RAG 模型,無人 import;現役在 ULIP_models.py:473-883 |
-| `core/models/rag_adapter.py` / `rag_generator.py` / `rag_enhancer.py` / `retriever.py` | 獨立版 RAG 元件,無人 import |
-| `core/data/dataset_3d_rag.py` | 舊版 RAG dataset,無人 import |
+| `core/_archive/`(ULIP_models_rag / rag_adapter / rag_generator / rag_enhancer / retriever / dataset_3d_rag,共 6 檔) | 已於 2026-07-10 歸檔;現役 RAG 實作在 ULIP_models.py:473-883,對照表見 `core/_archive/README.md` |
 | `core/scripts/build_rag_index.py` | CLIP 512d,與現役 384d faiss 不相容,**照跑會蓋掉現役索引** |
 | `core/quick_train.sh`、`core/check_environment.py`、`core/test_rag_functions.py` | 4090 env/路徑 |
 | `scripts/quick_train_portable.sh` | 同上(env 名 ulip_rag) |
@@ -69,6 +67,8 @@
 | 上線模型 | `/mnt/P300/data/ULIP/checkpoint_last.pt`(S2T R@1 76.5%) |
 | 檢索向量 | `/mnt/P300/data/ikea_data/vectors/`(pc/img 733、txt 732) |
 | IKEA 3D 資料 | `/mnt/P300/data/ikea_data/{ply(26G),ply_8192,json,glb,images}` |
-| RAG 語料+索引 | `core/rag_corpus/`(jsonl 8256 條 + faiss 384d;**faiss 生成腳本已佚失,此檔不可再生,已納入 git**) |
+| RAG 語料+索引 | `core/rag_corpus/`(jsonl 8256 條 + `minilm_corpus_index.faiss` 384d,已納 git;再生腳本 `core/scripts/rebuild_rag_index_minilm.py`,2026-07-10 驗證 100% 等價) |
+| Mongo 統一連線 | `ikea/mongo_conn.py`(env → `~/.ulip_mongo.env` 順序;所有 ikea 腳本已改用) |
+| 環境凍結 | `requirements_3090_freeze.txt`(pip freeze 實錄;舊 requirements.txt 僅供參考) |
 | SLIP/PointBERT 初始權重 | `/mnt/P300/data/ULIP/ULIP-1/initialize_models/` |
 | MongoDB | furniture_db:ikea_product(2527)/v2_2026q2(2112,含 dimensions_mm)/v3_fresh(2516) |

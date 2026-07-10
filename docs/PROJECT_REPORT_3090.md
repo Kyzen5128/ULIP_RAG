@@ -6,6 +6,15 @@
 > 用途：3090 現況的完整交接文件，並與 4090 的舊報告（已改名為 `PROJECT_REPORT_OLD_4090.md`）逐點比對。
 > 標「推測」/「尚未確認」處代表未實跑驗證。
 
+> **📌 2026-07-10 整理後補記(重要,本文以下若與此衝突以此為準)**:三階段 repo 整理已完成並 push(11 commits, 083f959..f2a97f6)。關鍵狀態變化:
+> ① **cwd=core 鐵則解除**——15 處相對路徑已以 `_CORE_DIR` 錨定,任意 cwd 可跑(PYTHONPATH 仍需含 core/);
+> ② mongo 一律走 `ikea/mongo_conn.py`(憑證自動讀 `~/.ulip_mongo.env`),舊無認證/硬編 URI 已全數移除;
+> ③ RAG faiss 已正名 `minilm_corpus_index.faiss` 並有再生腳本 `core/scripts/rebuild_rag_index_minilm.py`(驗證 100% 等價);
+> ④ 6 個孤兒 RAG 檔已歸檔 `core/_archive/`;
+> ⑤ dataset_catalog/labels/templates/yaml/faiss 已入 git(gitignore 誤傷已修);
+> ⑥ serving 預設路徑已改 3090(不掛 env 也不會指向 4090);
+> ⑦ 環境凍結見 `requirements_3090_freeze.txt`。總索引:`docs/INDEX.md`。
+
 ---
 
 ## 1. 專案用途總結
