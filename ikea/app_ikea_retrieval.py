@@ -73,7 +73,13 @@ for d in [TMP_DIR, UPLOAD_DIR, IMG_DIR, PLY_DIR, GLB_DIR, JSON_DIR]:
     os.makedirs(d, exist_ok=True)
 
 # 可選 MongoDB
-MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017/")
+# 2026-07-10:優先 env MONGO_URL,再讀 ~/.ulip_mongo.env(mongo 已啟用 --auth);
+# 都沒有才落回舊 URI(僅為相容,實際會被 --auth 拒絕)
+try:
+    from mongo_conn import get_mongo_uri  # PYTHONPATH 含 ikea/ 時可用
+    MONGO_URL = get_mongo_uri(required=False) or "mongodb://127.0.0.1:27017/"
+except ImportError:
+    MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017/")
 MONGO_DB  = os.getenv("MONGO_DB", "furniture_db")
 MONGO_COL = os.getenv("MONGO_COL", "ikea_product")
 USE_MONGO = os.getenv("USE_MONGO", "1")  # "1" 啟用，其他視為停用

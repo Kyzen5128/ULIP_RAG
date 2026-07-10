@@ -24,7 +24,8 @@ from datetime import datetime
 from pymongo import MongoClient, UpdateOne
 
 
-MONGO_URI = "mongodb://localhost:27017/"
+from mongo_conn import get_mongo_uri  # 2026-07-10 統一連線(mongo 已啟用 --auth,舊無認證 URI 已失效)
+MONGO_URI = get_mongo_uri()
 DB_NAME = "furniture_db"
 SRC = "ikea_product"                 # read-only
 DST = "ikea_product_v2_2026q2"       # write target

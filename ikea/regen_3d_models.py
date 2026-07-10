@@ -35,7 +35,8 @@ from pathlib import Path
 from typing import Optional
 
 
-MONGO_URI = "mongodb://localhost:27017/"
+from mongo_conn import get_mongo_uri  # 2026-07-10 統一連線(mongo 已啟用 --auth,舊無認證 URI 已失效)
+MONGO_URI = get_mongo_uri()
 DB_NAME = "furniture_db"
 V1_COL = "ikea_product"
 

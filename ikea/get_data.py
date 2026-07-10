@@ -16,13 +16,9 @@ constants = ikea_api.Constants(country="us", language="en")
 search = ikea_api.Search(constants)
 
 # 連線至 MongoDB
-# 2026-07-10:移除硬編帳密,改讀環境變數。憑證放 ~/.ulip_mongo.env(chmod 600),
-# 執行前:  export MONGO_URL="$(grep '^MONGO_URI=' ~/.ulip_mongo.env | cut -d= -f2-)"
-# (2026-06-05 mongo 已啟用 --auth,無認證 URI 會被拒)
-MONGO_URL = os.environ.get("MONGO_URL")
-if not MONGO_URL:
-    raise SystemExit("MONGO_URL 未設定。請先 source ~/.ulip_mongo.env 或 export MONGO_URL=...(見檔頭註解)")
-client = MongoClient(MONGO_URL)
+# 2026-07-10:統一走 mongo_conn(env MONGO_URL 優先,否則讀 ~/.ulip_mongo.env)
+from mongo_conn import get_mongo_uri
+client = MongoClient(get_mongo_uri())
 db = client["furniture_db"]
 collection = db.ikea_product_additional
 

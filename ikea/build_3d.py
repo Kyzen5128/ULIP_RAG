@@ -5,9 +5,10 @@ os.environ['ATTN_BACKEND'] = 'xformers'
 import torch
 torch.backends.cudnn.enabled = False  # cuDNN 9.0.1 incompatible on this machine
 
-from pymongo import MongoClient
+# 2026-07-10 統一連線(mongo 已啟用 --auth,舊無認證 URI 已失效)
+from mongo_conn import get_client
 
-client = MongoClient("mongodb://localhost:27017/")
+client = get_client()
 col = client["furniture_db"]["ikea_product"]
 
 def sample_top_per_category(col, top_n=50, min_count=30):
