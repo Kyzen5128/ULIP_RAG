@@ -1,0 +1,32 @@
+{
+    "shapenet": {
+        "config": "./data/configs/ShapeNet-55.yaml",
+        "train": "train",
+        "test": "test",
+        "usage": "train"
+    },
+    "modelnet40": {
+        "config": "./data/configs/ModelNet40.yaml",
+        "train": "train",
+        "test": "test",
+        "usage": "test"
+    },
+    "objaverse_lvis_colored": {
+        "config": "./data/configs/Objaverse_Lvis_Colored.yaml",
+        "train": "train",
+        "test": "test",
+        "usage": "test"
+    },
+    "ikea_ulip": {
+        "config": "./data/configs/ikea_ulip.yaml",
+        "train": "train",
+        "val": "val",
+        "usage": "train"
+    },
+    "ikea_ulip_smoke": {
+        "config": "./data/configs/ikea_ulip_smoke.yaml",
+        "train": "train",
+        "val": "val",
+        "usage": "train"
+    }
+}

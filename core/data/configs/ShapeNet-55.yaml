@@ -1,0 +1,4 @@
+NAME: ShapeNet
+DATA_PATH: /mnt/P300/data/ULIP/ULIP_Shapenet_Triplets
+PC_PATH: /mnt/P300/data/ULIP/ULIP_Shapenet_Triplets/shapenet_pc
+IMAGE_PATH: /mnt/P300/data/ULIP/ULIP_Shapenet_Triplets/rendered_images

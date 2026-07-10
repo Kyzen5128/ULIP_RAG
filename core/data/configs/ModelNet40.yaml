@@ -1,0 +1,4 @@
+NAME: ModelNet
+DATA_PATH: /mnt/P300/data/ULIP/ULIP-1/modelnet40_normal_resampled
+NUM_CATEGORY: 40
+USE_NORMALS: FALSE

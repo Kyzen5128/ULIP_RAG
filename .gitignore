@@ -31,11 +31,20 @@ Thumbs.db
 .env
 venv/
 env/
-data/
-data
+
+# 大型資料集實體(2026-07-10 修正:舊裸規則 `data` 誤傷 core/data/configs、
+# dataset_3d.py、corpus/vocab_build/data 等 runtime 必需檔。
+# 改為只擋指向大資料的 symlink/目錄;程式與設定一律納管)
+core/data/ULIP-1
+core/data/modelnet40
+core/data/shapenet-55
+core/data/initialize_models
+core/Pointnet2_PyTorch/pointnet2/data/
 
 # FAISS index (large binary)
 *.faiss
+# 例外:現役 RAG 檢索索引(12MB,生成腳本已佚失,屬不可再生資產,必須納管)
+!core/rag_corpus/*.faiss
 
 # Experiment outputs
 wandb/

@@ -1,0 +1,14 @@
+NAME: IkeaULIP
+JSON_DIR: /mnt/P300/data/ikea_data/json
+SPLIT_METHOD: hash
+TRAIN_RATIO: 1.0
+REQUIRE_IMAGE: false
+RENDER_PICK: random
+MIN_POINTS: 8192
+
+# ⚠️ smoke test 專用：PC_SAMPLER 用 random（瞬間）取代 fps。
+# 正式 ikea_ulip.yaml 是 fps —— 對 33~67 萬點的 gaussian ply，numpy FPS 每筆 20-40s CPU，
+# 1 epoch 需數小時；只適合正式長訓，不適合驗證流程。
+PC_SAMPLER: random
+AUGMENT: true
+PAD_IF_SHORT: true
