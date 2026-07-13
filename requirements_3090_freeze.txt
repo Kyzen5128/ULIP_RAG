@@ -1,6 +1,8 @@
-# ulip env 實際凍結(pip freeze)— 2026-07-10 於 3090(edge05)產出
+# ulip env 實際凍結(pip freeze)— 2026-07-14 更新於 3090(edge05)
 # Python 3.9.23 / CUDA 12.8 / RTX 3090 Ti。本檔為環境重建的真實依據;
 # 舊 requirements.txt 版本號過時僅供參考。local 路徑套件(pointnet2_ops 等)需照 docs 手動編譯。
+# 2026-07-14 差異:+accelerate(Llama pipeline 需要);diff_gaussian_rasterization/diffoctreerast 已本機重編(GLIBC 2.31 相容)。
+accelerate==1.10.1
 addict==2.4.0
 aiofiles==23.2.1
 aiohappyeyeballs==2.6.1
@@ -39,8 +41,8 @@ dataclasses-json==0.6.7
 debugpy @ file:///croot/debugpy_1736267418885/work
 decorator @ file:///home/conda/feedstock_root/build_artifacts/decorator_1740384970518/work
 Deprecated==1.2.18
-diff_gaussian_rasterization @ file:///tmp/extensions/mip-splatting/submodules/diff-gaussian-rasterization
-diffoctreerast @ file:///tmp/extensions/diffoctreerast
+diff_gaussian_rasterization @ file:///tmp/ulip_rag_smoke_test/ext/mip-splatting/submodules/diff-gaussian-rasterization
+diffoctreerast @ file:///tmp/ulip_rag_smoke_test/ext/diffoctreerast
 dnspython==2.7.0
 easydict==1.13
 efficientnet_pytorch==0.7.1
