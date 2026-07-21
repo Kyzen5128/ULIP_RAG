@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "request_id": "fixture-product-candidates-001",
+  "status": "ok",
+  "query_metadata": {
+    "tokenizer_id": "fixture-tokenizer",
+    "token_count": 14,
+    "truncated": false,
+    "eot_present": true
+  },
+  "results": [
+    {
+      "product_id": "fixture-sofa-001",
+      "name": "Fixture Sofa",
+      "category": "Sofa",
+      "matched_request_category": "couch",
+      "category_tier": "primary",
+      "retrieval_score": 0.75,
+      "dimensions": {
+        "unit": "mm",
+        "width": 1200,
+        "depth": 700,
+        "height": 650
+      },
+      "dimension_status": "special_unmodeled",
+      "height_policy": "optional",
+      "catalog_quality_status": "degraded",
+      "hard_filter_eligible": false,
+      "footprint_kind": "special_unmodeled",
+      "special_flags": ["FOOTPRINT_SHAPE_UNVERIFIED"]
+    },
+    {
+      "product_id": "fixture-desk-001",
+      "name": "Fixture Desk",
+      "category": "Office Desk",
+      "matched_request_category": "desk",
+      "category_tier": "secondary",
+      "retrieval_score": 0.5,
+      "dimensions": {
+        "unit": "mm",
+        "width": 1000,
+        "depth": 500,
+        "height": null
+      },
+      "dimension_status": "partial",
+      "height_policy": "optional",
+      "catalog_quality_status": "supported",
+      "hard_filter_eligible": true,
+      "footprint_kind": "rectangle",
+      "special_flags": [],
+      "allowed_yaws_deg": [0, 90, 180, 270]
+    }
+  ],
+  "warnings": ["CATEGORY_DATA_QUALITY_DEGRADED"],
+  "provenance": {
+    "model_checkpoint_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+    "vector_bundle_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+    "catalog_manifest_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+    "dimension_bundle_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+    "tokenizer_bundle_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+    "category_policy_version": "v2t36_to_ikea15_v1",
+    "dimension_axis_policy_version": "dimension_axis_v1"
+  }
+}

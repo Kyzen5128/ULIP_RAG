@@ -1,0 +1,38 @@
+[Unit]
+Description=ULIP Product Candidates v1 (loopback only)
+After=local-fs.target
+ConditionFileIsExecutable=/home/kyzen/ULIP_RAG/ikea/product_candidates/deploy/launch_8321.sh
+
+[Service]
+Type=simple
+User=kyzen
+Group=kyzen
+WorkingDirectory=/home/kyzen/ULIP_RAG/ikea
+EnvironmentFile=/etc/ulip-product-candidates/environment
+ExecStart=/home/kyzen/ULIP_RAG/ikea/product_candidates/deploy/launch_8321.sh
+Restart=on-failure
+RestartSec=5s
+TimeoutStartSec=180s
+TimeoutStopSec=30s
+KillSignal=SIGINT
+UMask=0077
+
+# Safe for the GPU service while keeping the repository and model artifacts
+# read-only.  Do not add PrivateDevices=true: it would hide the NVIDIA devices.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=read-only
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+ReadOnlyPaths=/mnt/P300/data
+RestrictSUIDSGID=true
+RestrictRealtime=true
+LockPersonality=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+IPAddressDeny=any
+IPAddressAllow=localhost
+
+[Install]
+WantedBy=multi-user.target

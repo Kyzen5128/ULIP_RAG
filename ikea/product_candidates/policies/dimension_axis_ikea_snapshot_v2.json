@@ -1,0 +1,31 @@
+{
+  "schema_version": "ulip-dimension-axis-policy/2.0",
+  "policy_version": "dimension_axis_ikea_snapshot_v2",
+  "source": {
+    "snapshot_version": "ikea-us-20260716-v1",
+    "metadata_schema": "ikea-product-spatial-metadata/2.0",
+    "field": "dimensions_mm",
+    "unit": "mm",
+    "horizontal_fields": ["width", "depth"],
+    "vertical_field": "height"
+  },
+  "wire": {
+    "unit": "mm",
+    "width_rule": "source.width",
+    "depth_rule": "source.depth",
+    "height_rule": "source.height_or_null",
+    "unit_conversion_count_at_5090_boundary": 1,
+    "allowed_axis_yaws_deg": [0, 90, 180, 270],
+    "yaw_semantics": "footprint_axis_only_no_front_or_facing_claim"
+  },
+  "hard_filter_eligible_semantics": "three verified positive axes and modeled footprint; range, missing, partial, special shape, and unverified sofa shape fail closed",
+  "height_policy": "required_for_retrieval_request_v2_hard_fit",
+  "range_policy": "never_hard_pass",
+  "missing_policy": "never_hard_pass",
+  "unverified_fields": {
+    "front_direction": "not_available",
+    "canonical_yaw": "not_available",
+    "clearance": "not_available",
+    "non_rectangular_sofa_footprint": "not_verified"
+  }
+}

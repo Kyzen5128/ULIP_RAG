@@ -137,13 +137,23 @@ class SimpleTokenizer(object):
         if isinstance(texts, str):
             texts = [texts]
 
+        if context_length < 2:
+            raise ValueError("context_length must leave room for SOT and EOT tokens")
+
         sot_token = self.encoder["<|startoftext|>"]
         eot_token = self.encoder["<|endoftext|>"]
         all_tokens = [[sot_token] + self.encode(text) + [eot_token] for text in texts]
         result = torch.zeros(len(all_tokens), context_length, dtype=torch.long)
 
         for i, tokens in enumerate(all_tokens):
-            tokens = tokens[:context_length]
+            # CLIP pools the feature at the EOT token position (the largest
+            # token id).  A plain slice can remove EOT for long prompts and
+            # make the encoder pool an unrelated position.  Keep the original
+            # CLIP layout while always reserving the last occupied slot for
+            # EOT.
+            if len(tokens) > context_length:
+                tokens = tokens[:context_length]
+                tokens[-1] = eot_token
             result[i, :len(tokens)] = torch.tensor(tokens)
 
         if len(result) == 1:

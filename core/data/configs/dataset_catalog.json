@@ -28,5 +28,11 @@
         "train": "train",
         "val": "val",
         "usage": "train"
+    },
+    "ikea_ulip_v2": {
+        "config": "/home/kyzen/ULIP_RAG/ikea/loop2/ikea_ulip_v2.yaml",
+        "train": "train",
+        "val": "val",
+        "usage": "train"
     }
 }

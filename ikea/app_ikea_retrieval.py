@@ -7,9 +7,11 @@ os.environ['ATTN_BACKEND'] = 'xformers'
 import torch
 torch.backends.cudnn.enabled = False  # cuDNN 9.0.1 incompatible on this machine
 
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Literal
+from argparse import Namespace
 from datetime import datetime
 import mimetypes, json, tempfile, logging, shutil, uuid
+from pathlib import Path
 import numpy as np
 import torch
 import torch.nn.functional as F
@@ -59,6 +61,34 @@ from utils import utils as U  # has get_model()
 VEC_DIR = os.getenv("VEC_DIR", "/mnt/P300/data/ikea_data/vectors")
 CKPT    = os.getenv("CKPT",    "/mnt/P300/data/ULIP/checkpoint_last.pt")
 DEVICE  = "cuda" if (os.getenv("DEVICE", "cuda") == "cuda" and torch.cuda.is_available()) else "cpu"
+
+# Core RAG is opt-out on the 3090 serving path.  When enabled, every RAG
+# dependency is required and startup fails closed instead of silently serving
+# vanilla embeddings under a RAG label.
+RAG_ENABLED = os.getenv("RAG_ENABLED", "1") == "1"
+RAG_DEFAULT_MODE = os.getenv(
+    # The historical Core enhancer is connected and available for explicit
+    # RAG/A-B requests, but it is not IKEA-aligned.  Keep legacy clients on the
+    # validated vanilla embedding until an IKEA RAG Stage 2 checkpoint passes
+    # the promotion gate.
+    "RAG_DEFAULT_MODE", "vanilla"
+).strip().lower()
+RAG_STAGE1_CKPT = os.getenv(
+    "RAG_STAGE1_CKPT",
+    "/home/kyzen/ULIP_RAG/core/outputs/RAG2_Stage1/checkpoint_best.pt",
+)
+RAG_CORPUS_DIR = os.getenv(
+    "RAG_CORPUS_DIR",
+    "/mnt/P300/data/ULIP/4090_cheng_archive_20260715/ULIP_RAG/rag_corpus_1095",
+)
+RAG_CORPUS_PROFILE = os.getenv("RAG_CORPUS_PROFILE", "legacy1095")
+RAG_TOP_K = int(os.getenv("RAG_TOP_K", "5"))
+if RAG_DEFAULT_MODE not in {"vanilla", "rag"}:
+    raise RuntimeError(f"Invalid RAG_DEFAULT_MODE={RAG_DEFAULT_MODE!r}")
+if RAG_DEFAULT_MODE == "rag" and not RAG_ENABLED:
+    raise RuntimeError("RAG_DEFAULT_MODE=rag requires RAG_ENABLED=1")
+if RAG_TOP_K <= 0:
+    raise RuntimeError("RAG_TOP_K must be positive")
 
 # 兩個根資料夾（取代以前的 ASSET_BASE/ulip_output & test_output）
 ULIP_OUTPUT   = os.getenv("ULIP_OUTPUT",   "/mnt/P300/data/ikea_data")    # 以前的 ulip_output
@@ -148,6 +178,12 @@ if not (os.path.isfile(pc_vec_path) and os.path.isfile(pc_meta_path)):
 PC_VECS  = np.load(pc_vec_path).astype(np.float32)
 PC_VECS  = _ensure_normalized(PC_VECS)
 PC_META  = _load_meta_jsonl(pc_meta_path)
+if PC_VECS.ndim != 2 or PC_VECS.shape[0] != len(PC_META):
+    raise RuntimeError(
+        f"PC vector/meta mismatch: vectors={PC_VECS.shape}, meta={len(PC_META)}"
+    )
+if not np.isfinite(PC_VECS).all():
+    raise RuntimeError("PC vectors contain NaN or infinity")
 
 # id -> meta
 ID2META: Dict[str, Dict[str, Any]] = {m.get("id"): m for m in PC_META if m.get("id")}
@@ -299,10 +335,16 @@ class TextSearchReq(BaseModel):
     query: str
     top_k: int = 10
     category: Optional[str] = None
+    embedding_mode: Literal["vanilla", "rag"] = RAG_DEFAULT_MODE
+    rag_top_k: Optional[int] = None
+    include_rag_documents: bool = True
 
 class SearchHit(BaseModel):
     id: str
     score: float
+    rank: Optional[int] = None
+    row_index: Optional[int] = None
+    ulip_similarity: Optional[float] = None
     category: Optional[str] = None
     caption_en: Optional[str] = None
     preview_image: Optional[str] = None
@@ -311,6 +353,15 @@ class SearchHit(BaseModel):
 class TextSearchResp(BaseModel):
     count: int
     results: List[SearchHit]
+    embedding_mode: Literal["vanilla", "rag"] = "vanilla"
+    rag_enabled: bool = False
+    rag_profile: Optional[str] = None
+    diagnostics: Optional[Dict[str, Any]] = None
+
+class CompareSearchResp(BaseModel):
+    vanilla: TextSearchResp
+    rag: TextSearchResp
+    overlap_at_k: float
 
 class FileGetResp(BaseModel):
     id: str
@@ -323,26 +374,78 @@ class FileGetResp(BaseModel):
 def load_ulip_text_encoder(ckpt_path: str, device: str):
     ckpt = torch.load(ckpt_path, map_location="cpu", weights_only=False)
     state = ckpt.get("state_dict", ckpt)
-    state = {k.replace("module.", ""): v for k, v in state.items()}
-    if "args" in ckpt and hasattr(ckpt["args"], "model"):
-        mdl_name = ckpt["args"].model
-        setattr(ckpt["args"], "evaluate_3d", True)
-        model = getattr(models, mdl_name)(args=ckpt["args"])
-        print(f"[ULIP] Using model from checkpoint: {mdl_name}")
+    state = {
+        (k[len("module.") :] if k.startswith("module.") else k): v
+        for k, v in state.items()
+    }
+    raw_args = ckpt.get("args")
+    if isinstance(raw_args, dict):
+        model_args = Namespace(**raw_args)
+    elif raw_args is not None:
+        model_args = Namespace(**vars(raw_args))
     else:
-        from argparse import Namespace
-        fake = Namespace(model="ULIP_PointBERT")
-        model = getattr(models, "ULIP_PointBERT")(args=fake)
+        model_args = Namespace(model="ULIP_PointBERT")
+    mdl_name = getattr(model_args, "model", "ULIP_PointBERT")
+    setattr(model_args, "evaluate_3d", True)
+    if mdl_name == "ULIP_PointBERT_RAG":
+        # Stage 2 checkpoints contain the trained point branch plus enhancer,
+        # but serving constructs the lightweight base explicitly and lets
+        # rag_serving load the selected Stage 1 enhancer/provenance chain.
+        model = models.ULIP_PointBERT(args=model_args)
+        state = {
+            key: value
+            for key, value in state.items()
+            if not key.startswith("rag_enhancer.")
+        }
+        print("[ULIP] Using ULIP_PointBERT base from RAG checkpoint")
+    else:
+        model = getattr(models, mdl_name)(args=model_args)
+        print(f"[ULIP] Using model from checkpoint: {mdl_name}")
+    if raw_args is None:
         print("[ULIP] Fallback model: ULIP_PointBERT")
-    missing, unexpected = model.load_state_dict(state, strict=False)
-    if missing:    print("[ULIP] Missing keys:", missing[:5], "...")
-    if unexpected: print("[ULIP] Unexpected keys:", unexpected[:5], "...")
+    # The product vectors are tied to this exact IKEA checkpoint.  A partial
+    # model load would create a different embedding space while still looking
+    # operational, so serving must reject it.
+    model.load_state_dict(state, strict=True)
     model = model.to(device).eval()
     tok   = SimpleTokenizer()
     return model, tok
 
 MODEL, TOKENIZER = load_ulip_text_encoder(CKPT, DEVICE)
+if PC_VECS.shape[1] != int(U.get_model(MODEL).text_projection.shape[1]):
+    raise RuntimeError(
+        "PC vector/text embedding dimension mismatch: "
+        f"vectors={PC_VECS.shape[1]}, text={U.get_model(MODEL).text_projection.shape[1]}"
+    )
+
+RAG_ADAPTER = None
+if RAG_ENABLED:
+    try:
+        from rag_serving import load_adapter
+
+        RAG_ADAPTER = load_adapter(
+            ikea_checkpoint=Path(CKPT),
+            rag_checkpoint=Path(RAG_STAGE1_CKPT),
+            corpus_dir=Path(RAG_CORPUS_DIR),
+            corpus_profile=RAG_CORPUS_PROFILE,
+            vector_dir=Path(VEC_DIR),
+            device=DEVICE,
+            rag_top_k=RAG_TOP_K,
+            base_model=MODEL,
+            tokenizer=TOKENIZER,
+        )
+    except Exception as exc:
+        # RAG-enabled serving is fail-closed.  Operators can explicitly set
+        # RAG_ENABLED=0 to run the legacy vanilla endpoint.
+        raise RuntimeError(f"Core RAG initialization failed: {exc}") from exc
+
 print(f"[READY] vectors={PC_VECS.shape}, device={DEVICE}")
+if RAG_ADAPTER is not None:
+    loaded_rag_profile = RAG_ADAPTER.status()["profile"]
+    print(
+        "[READY] Core RAG enabled "
+        f"profile={loaded_rag_profile} corpus={RAG_CORPUS_DIR} top_k={RAG_TOP_K}"
+    )
 
 print(f"[PATHS] VEC_DIR={VEC_DIR}")
 
@@ -396,6 +499,54 @@ def search_text(query: str, top_k: int, category: Optional[str]) -> List[Dict]:
             "json_path": m.get("json_path"),
         })
     return results
+
+def search_text_with_mode(
+    query: str,
+    top_k: int,
+    category: Optional[str],
+    embedding_mode: str,
+    rag_top_k: Optional[int] = None,
+    include_rag_documents: bool = True,
+) -> tuple[List[Dict[str, Any]], Dict[str, Any]]:
+    """Search with an explicit vanilla/RAG embedding mode.
+
+    When the adapter is loaded, vanilla also goes through its verified text
+    path so A/B comparisons differ only by retrieval + RAGEnhancer.
+    """
+    if embedding_mode not in {"vanilla", "rag"}:
+        raise ValueError("embedding_mode must be 'vanilla' or 'rag'")
+    if rag_top_k is not None and rag_top_k <= 0:
+        raise ValueError("rag_top_k must be positive")
+    if embedding_mode == "rag" and RAG_ADAPTER is None:
+        raise RuntimeError("Core RAG is disabled or not ready")
+
+    if RAG_ADAPTER is None:
+        hits = search_text(query, top_k, category)
+        return hits, {
+            "mode": "vanilla",
+            "rag_top_k_returned": 0,
+            "retrieved_documents": [],
+        }
+
+    payload = RAG_ADAPTER.search(
+        query,
+        top_k=top_k,
+        category=category,
+        mode=embedding_mode,
+        rag_top_k=rag_top_k,
+    )
+    hits = []
+    for row in payload["results"]:
+        similarity = float(row["ulip_similarity"])
+        hits.append({
+            **row,
+            "score": similarity,
+        })
+    diagnostics = dict(payload["diagnostics"])
+    if not include_rag_documents:
+        diagnostics.pop("retrieved_documents", None)
+    return hits, diagnostics
+
 def _scan_ids_under(root: str) -> List[str]:
     """掃描指定 root 下的 images/ply/glb/json 取得檔名前綴（ID）。"""
     if not root or not os.path.isdir(root):
@@ -447,7 +598,7 @@ class IdListResp(BaseModel):
     count: int
     ids: List[str]
 # --------- FastAPI app ---------
-app = FastAPI(title="IKEA ULIP Retrieval", version="1.0")
+app = FastAPI(title="IKEA ULIP + Core RAG Retrieval", version="2.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -461,8 +612,87 @@ def text_search(req: TextSearchReq):
     q = req.query.strip()
     if not q:
         raise HTTPException(status_code=400, detail="query is empty")
-    hits = search_text(q, req.top_k, req.category)
-    return TextSearchResp(count=len(hits), results=hits)
+    try:
+        hits, diagnostics = search_text_with_mode(
+            q,
+            req.top_k,
+            req.category,
+            req.embedding_mode,
+            req.rag_top_k,
+            req.include_rag_documents,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    return TextSearchResp(
+        count=len(hits),
+        results=hits,
+        embedding_mode=req.embedding_mode,
+        rag_enabled=RAG_ADAPTER is not None,
+        rag_profile=(
+            RAG_ADAPTER.status()["profile"]
+            if req.embedding_mode == "rag" and RAG_ADAPTER is not None
+            else None
+        ),
+        diagnostics=diagnostics,
+    )
+
+@app.post("/search/text/rag", response_model=TextSearchResp)
+def text_search_rag(req: TextSearchReq):
+    """Explicit Core-RAG route; ignores a client-supplied vanilla mode."""
+    if RAG_ADAPTER is None:
+        raise HTTPException(status_code=503, detail="Core RAG is disabled or not ready")
+    req.embedding_mode = "rag"
+    return text_search(req)
+
+@app.post("/search/text/compare", response_model=CompareSearchResp)
+def text_search_compare(req: TextSearchReq):
+    """Run a controlled vanilla/RAG A/B search for the same query."""
+    if RAG_ADAPTER is None:
+        raise HTTPException(status_code=503, detail="Core RAG is disabled or not ready")
+    vanilla_req = req.model_copy(deep=True) if hasattr(req, "model_copy") else req.copy(deep=True)
+    rag_req = req.model_copy(deep=True) if hasattr(req, "model_copy") else req.copy(deep=True)
+    vanilla_req.embedding_mode = "vanilla"
+    rag_req.embedding_mode = "rag"
+    vanilla = text_search(vanilla_req)
+    rag = text_search(rag_req)
+    vanilla_ids = {hit.id for hit in vanilla.results}
+    rag_ids = {hit.id for hit in rag.results}
+    denominator = max(1, min(len(vanilla_ids), len(rag_ids)))
+    overlap = len(vanilla_ids & rag_ids) / denominator
+    return CompareSearchResp(vanilla=vanilla, rag=rag, overlap_at_k=overlap)
+
+@app.get("/healthz")
+def healthz():
+    return {"status": "ok"}
+
+@app.get("/readyz")
+def readyz():
+    checks = {
+        "model_loaded": MODEL is not None,
+        "vector_rows": int(PC_VECS.shape[0]),
+        "metadata_rows": len(PC_META),
+        "embedding_dimension": int(PC_VECS.shape[1]),
+        "rag_required": RAG_ENABLED,
+        "rag_ready": bool(RAG_ADAPTER is not None and RAG_ADAPTER.ready),
+    }
+    ready = (
+        checks["model_loaded"]
+        and checks["vector_rows"] == checks["metadata_rows"]
+        and (not RAG_ENABLED or checks["rag_ready"])
+    )
+    payload = {
+        "status": "ready" if ready else "not_ready",
+        "checks": checks,
+        "rag_profile": (
+            RAG_ADAPTER.status()["profile"] if RAG_ADAPTER is not None else None
+        ),
+        "rag": RAG_ADAPTER.status() if RAG_ADAPTER is not None else None,
+    }
+    if not ready:
+        raise HTTPException(status_code=503, detail=payload)
+    return payload
 
 # --------- 檔案查詢 ---------
 @app.get("/file", response_model=FileGetResp)

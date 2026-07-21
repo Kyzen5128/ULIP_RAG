@@ -1,0 +1,8 @@
+{
+  "schema_version": "1.0",
+  "request_id": "fixture-product-candidates-001",
+  "query_text": "A compact neutral couch and a small desk for this room.",
+  "categories_primary": ["couch"],
+  "categories_secondary": ["desk"],
+  "top_k_per_tier": 2
+}

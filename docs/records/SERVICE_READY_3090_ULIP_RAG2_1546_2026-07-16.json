@@ -1,0 +1,39 @@
+{
+  "schema_version": "ulip-rag2-service-ready/1.0",
+  "status": "SERVICE_READY",
+  "service": "ulip-product-candidates",
+  "bind": "127.0.0.1:8321",
+  "endpoint": "http://127.0.0.1:8321/v2/product-candidates",
+  "ssh_tunnel_endpoint": "http://127.0.0.1:18321/v2/product-candidates",
+  "token_path": "/home/kyzen/.config/ulip-product-candidates/e2e_token",
+  "deployment_profile_path": "/mnt/P300/data/ULIP/product_candidates/deployments/ikea1546-product-candidates-v2-20260716-732f2a0323c1896f",
+  "deployment_profile_id": "ikea1546-product-candidates-v2-20260716-732f2a0323c1896f",
+  "endpoint_schema_version": "1.0",
+  "retrieval_mode": "semantic_vanilla",
+  "provenance": {
+    "model_checkpoint_sha256": "4c49ae845b972eb176decb29d398a5c5d03781270a267377b1481bbfbf2c4936",
+    "vector_bundle_sha256": "603814ede8d0e8ce1557731e6fc8f9a831699c5fe8c8d9449eb71feddd9a94d5",
+    "catalog_manifest_sha256": "bfecfb675e1eba929e66ee17606be9a029eeaea306bb96a462e1620b54b4cf67",
+    "dimension_bundle_sha256": "732cdf381caaf11e10164c650a7fc76b49be08220b1b15b740fd260b060c56d6",
+    "tokenizer_bundle_sha256": "6cc2fa0afe0fa24ee7858c42635d11c43b2dcdd836afd63b07ce0e577af794e2",
+    "category_policy_version": "v2t36_to_ikea24_v2",
+    "dimension_axis_policy_version": "dimension_axis_ikea_snapshot_v2"
+  },
+  "inventory": {
+    "vector_shape": [1546, 512],
+    "vector_rows": 1546,
+    "catalog_rows": 1546,
+    "dimension_profile_rows": 1546
+  },
+  "checks": {
+    "model_checkpoint": true,
+    "vector_bundle": true,
+    "catalog_manifest": true,
+    "dimension_bundle": true,
+    "tokenizer_bundle": true,
+    "row_identity_join": true,
+    "policy_versions": true
+  },
+  "rag_promoted_to_production": false,
+  "rag_training_corpus_sha256": "1f053282712f53328a96f99fc89e3dd42a17f9347d569f3b3bcddd7a378d0467"
+}

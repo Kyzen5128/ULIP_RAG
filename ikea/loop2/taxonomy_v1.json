@@ -1,0 +1,105 @@
+{
+  "schema_version": "ikea-ulip2-taxonomy/1.0",
+  "policy_version": "ikea-v2t-core-furniture-v1",
+  "description": "Strict room-placeable furniture taxonomy. Accessories, replacement parts, mattresses, lighting and decor are rejected.",
+  "sources": [
+    {"source_id": "fu003", "source_category": "Sofas", "fallback_category": "Sofa"},
+    {"source_id": "10670", "source_category": "Sectionals", "fallback_category": "Sofa"},
+    {"source_id": "10663", "source_category": "Sleeper sofas", "fallback_category": "Sofa"},
+    {"source_id": "fu006", "source_category": "Armchairs", "fallback_category": "Armchair"},
+    {"source_id": "20926", "source_category": "Ottomans and footstools", "fallback_category": "Ottoman"},
+    {"source_id": "25219", "source_category": "Dining chairs", "fallback_category": "Dining Chair"},
+    {"source_id": "20864", "source_category": "Bar stools", "fallback_category": "Bar Stool"},
+    {"source_id": "25220", "source_category": "Benches", "fallback_category": "Bench"},
+    {"source_id": "20649", "source_category": "Desks", "fallback_category": "Office Desk"},
+    {"source_id": "21825", "source_category": "Dining tables", "fallback_category": "Dining Table"},
+    {"source_id": "10705", "source_category": "Coffee and side tables", "fallback_category": "Coffee Table"},
+    {"source_id": "20657", "source_category": "Dressing tables", "fallback_category": "Vanity Table"},
+    {"source_id": "20656", "source_category": "Nightstands", "fallback_category": "Nightstand"},
+    {"source_id": "10412", "source_category": "Sideboards", "fallback_category": "Sideboard"},
+    {"source_id": "10475", "source_category": "TV units", "fallback_category": "TV Stand"},
+    {"source_id": "19053", "source_category": "Wardrobes", "fallback_category": "Wardrobe"},
+    {"source_id": "10382", "source_category": "Bookcases", "fallback_category": "Bookshelf"},
+    {"source_id": "10550", "source_category": "Shelving units", "fallback_category": "Bookshelf"},
+    {"source_id": "20652", "source_category": "Drawer units", "fallback_category": "Filing Cabinet"},
+    {"source_id": "bm003", "source_category": "Beds", "fallback_category": "Bed"},
+    {"source_id": "18723", "source_category": "Bunk beds", "fallback_category": "Bunk Bed"}
+  ],
+  "canonical_categories": [
+    "Sofa", "Armchair", "Recliner", "Ottoman", "Dining Chair", "Office Chair", "Bar Stool",
+    "Bench", "Office Desk", "Conference Table", "Dining Table", "Coffee Table", "Side Table",
+    "Console Table", "Vanity Table", "Nightstand", "Sideboard", "Cabinet",
+    "TV Stand", "Wardrobe", "Bookshelf", "Filing Cabinet", "Bed", "Bunk Bed"
+  ],
+  "type_rules": [
+    {"category": "Bunk Bed", "patterns": ["bunk bed", "loft bed"]},
+    {"category": "Recliner", "patterns": ["recliner", "reclining armchair"]},
+    {"category": "Armchair", "patterns": ["armchair", "easy chair", "lounge chair", "accent chair", "chaise longue", "wing chair", "rocking chair", "chair bed"]},
+    {"category": "Sofa", "patterns": ["sofa", "sectional", "loveseat", "sleeper sofa", "sofa-bed", "chaise section"]},
+    {"category": "Ottoman", "patterns": ["ottoman", "footstool", "pouffe", "pouf"]},
+    {"category": "Bar Stool", "patterns": ["bar stool", "counter stool", "bar chair"]},
+    {"category": "Office Chair", "patterns": ["office chair", "gaming chair", "conference chair", "desk chair", "swivel chair"]},
+    {"category": "Dining Chair", "patterns": ["dining chair", "chair, in/outdoor", "chair, outdoor", "chair with armrests"]},
+    {"category": "Vanity Table", "patterns": ["dressing table", "vanity table"]},
+    {"category": "Nightstand", "patterns": ["nightstand", "bedside table", "bedside cabinet"]},
+    {"category": "Console Table", "patterns": ["console table"]},
+    {"category": "Coffee Table", "patterns": ["coffee table"]},
+    {"category": "Side Table", "patterns": ["side table", "end table", "nesting tables", "storage table", "tray table", "laptop table"]},
+    {"category": "Conference Table", "patterns": ["conference table"]},
+    {"category": "Dining Table", "patterns": ["dining table", "extendable table", "gateleg table", "drop-leaf table", "folding table"]},
+    {"category": "Office Desk", "patterns": ["desk", "workstation"]},
+    {"category": "TV Stand", "patterns": ["tv bench", "tv unit", "tv stand", "media unit", "tv storage", "tv/storage", "media storage"]},
+    {"category": "Bench", "patterns": ["bench"]},
+    {"category": "Wardrobe", "patterns": ["wardrobe", "closet"]},
+    {"category": "Bookshelf", "patterns": ["bookcase", "bookshelf", "shelving unit", "shelf unit", "wall shelf unit"]},
+    {"category": "Filing Cabinet", "patterns": ["filing cabinet", "drawer unit"]},
+    {"category": "Sideboard", "patterns": ["sideboard", "buffet"]},
+    {"category": "Cabinet", "patterns": ["cabinet", "chest of drawers", "dresser", "storage combination"]},
+    {"category": "Bed", "patterns": ["bed frame", "upholstered bed", "storage bed", "stackable bed", "trundle bed", "reversible bed", "extendable bed", "daybed", "day-bed", "bed with storage", "bed with headboard"]}
+  ],
+  "exact_reject_types": [
+    "chair pad", "door", "sliding door", "drawer", "shelf", "tabletop", "desk top", "underframe",
+    "seat shell", "seat pad", "headrest", "pair of armrests", "floor protector",
+    "add-on unit", "acoustic screen for desk", "remote control", "lid", "tray", "box",
+    "children's armchair frame", "children’s armchair frame", "children´s armchair frame",
+    "chaise longue module", "chaise section", "sofa section", "loveseat section",
+    "loveseat sleeper section", "frame for loveseat sleeper section"
+  ],
+  "reject_type_prefixes": [
+    "table+", "desk and chair", "gaming desk and chair", "armchair and ottoman",
+    "armchair with ottoman", "wing chair with ottoman", "swivel easy chair and footstool",
+    "frame for", "slipcover", "cover for", "cover "
+  ],
+  "source_exact_overrides": {
+    "25219": {"chair": "Dining Chair"},
+    "25220": {"chair": "Dining Chair"},
+    "fu006": {"chair": "Armchair"},
+    "20926": {"stool": "Ottoman"},
+    "20649": {"table": "Office Desk", "foldable table with castors": "Office Desk"},
+    "21825": {"table": "Dining Table", "table with drawer": "Dining Table"},
+    "20656": {"2-drawer chest": "Nightstand", "bedside table/shelf unit": "Nightstand", "stool with storage": "Ottoman"}
+    ,"bm003": {
+      "bed frame with slatted bed base": "Bed",
+      "ext bed frame with slatted bed base": "Bed",
+      "bed frame with storage and mattress": "Bed",
+      "bed frm w strg+guard rl+slat bd bse": "Bed",
+      "ext bed frm w guard rl+slat bd base": "Bed"
+    },
+    "18723": {
+      "bed frame with slatted bed base": "Bed",
+      "ext bed frame with slatted bed base": "Bed",
+      "bed frm w strg+guard rl+slat bd bse": "Bed",
+      "ext bed frm w guard rl+slat bd base": "Bed"
+    }
+  },
+  "global_reject_patterns": [
+    "cover", "replacement", "spare part", "underframe", "tabletop", "table top",
+    "mattress", "mattress pad", "mattress topper", "slatted bed base", "bed slats",
+    "headboard cover", "chair pad", "seat pad", "slipcover", "cushion", "pillow", "duvet", "bed linen", "sheet",
+    "organizer", "insert", "divider", "storage box", "box with lid", "box set", "basket", "bin", "bag",
+    "door panel", "drawer front", "shelf insert", "extra shelf", "replacement leg", "caster",
+    "hinge", "handle", "knob", "rail", "bracket", "mounting hardware",
+    "table lamp", "floor lamp", "ceiling lamp", "wall lamp", "lighting", "led strip", "light strip", "mirror only", "rug", "curtain", "plant pot",
+    "appliance", "microwave", "washing machine", "sink", "faucet"
+  ]
+}

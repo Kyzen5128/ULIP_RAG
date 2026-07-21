@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:v2t-camera:ulip-product-candidates-readyz:1.0",
+  "title": "ULIP product candidates readiness response v1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "service",
+    "status",
+    "deployment_profile_id",
+    "endpoint_schema_version",
+    "provenance",
+    "checks",
+    "inventory",
+    "failures"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "service": {"const": "ulip-product-candidates"},
+    "status": {"enum": ["ready", "not_ready"]},
+    "deployment_profile_id": {
+      "oneOf": [
+        {"type": "null"},
+        {"type": "string", "minLength": 1}
+      ]
+    },
+    "endpoint_schema_version": {"const": "1.0"},
+    "provenance": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/provenance"}
+      ]
+    },
+    "checks": {"$ref": "#/$defs/checks"},
+    "inventory": {"$ref": "#/$defs/inventory"},
+    "failures": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]*$"}
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"status": {"const": "ready"}},
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "deployment_profile_id": {"type": "string", "minLength": 1},
+          "provenance": {"$ref": "#/$defs/provenance"},
+          "checks": {
+            "allOf": [
+              {"$ref": "#/$defs/checks"},
+              {
+                "properties": {
+                  "model_checkpoint": {"const": true},
+                  "vector_bundle": {"const": true},
+                  "catalog_manifest": {"const": true},
+                  "dimension_bundle": {"const": true},
+                  "tokenizer_bundle": {"const": true},
+                  "row_identity_join": {"const": true},
+                  "policy_versions": {"const": true}
+                }
+              }
+            ]
+          },
+          "inventory": {
+            "allOf": [
+              {"$ref": "#/$defs/inventory"},
+              {
+                "properties": {
+                  "vector_shape": {
+                    "prefixItems": [
+                      {"type": "integer", "minimum": 1},
+                      {"type": "integer", "minimum": 1}
+                    ]
+                  },
+                  "vector_rows": {"type": "integer", "minimum": 1},
+                  "catalog_rows": {"type": "integer", "minimum": 1},
+                  "dimension_profile_rows": {"type": "integer", "minimum": 1}
+                }
+              }
+            ]
+          },
+          "failures": {"maxItems": 0}
+        }
+      },
+      "else": {
+        "properties": {
+          "checks": {
+            "allOf": [
+              {"$ref": "#/$defs/checks"},
+              {
+                "not": {
+                  "properties": {
+                    "model_checkpoint": {"const": true},
+                    "vector_bundle": {"const": true},
+                    "catalog_manifest": {"const": true},
+                    "dimension_bundle": {"const": true},
+                    "tokenizer_bundle": {"const": true},
+                    "row_identity_join": {"const": true},
+                    "policy_versions": {"const": true}
+                  }
+                }
+              }
+            ]
+          },
+          "failures": {"minItems": 1}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_checkpoint_sha256",
+        "vector_bundle_sha256",
+        "catalog_manifest_sha256",
+        "dimension_bundle_sha256",
+        "tokenizer_bundle_sha256",
+        "category_policy_version",
+        "dimension_axis_policy_version"
+      ],
+      "properties": {
+        "model_checkpoint_sha256": {"$ref": "#/$defs/sha256"},
+        "vector_bundle_sha256": {"$ref": "#/$defs/sha256"},
+        "catalog_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "dimension_bundle_sha256": {"$ref": "#/$defs/sha256"},
+        "tokenizer_bundle_sha256": {"$ref": "#/$defs/sha256"},
+        "category_policy_version": {"type": "string", "minLength": 1},
+        "dimension_axis_policy_version": {"type": "string", "minLength": 1}
+      }
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_checkpoint",
+        "vector_bundle",
+        "catalog_manifest",
+        "dimension_bundle",
+        "tokenizer_bundle",
+        "row_identity_join",
+        "policy_versions"
+      ],
+      "properties": {
+        "model_checkpoint": {"type": "boolean"},
+        "vector_bundle": {"type": "boolean"},
+        "catalog_manifest": {"type": "boolean"},
+        "dimension_bundle": {"type": "boolean"},
+        "tokenizer_bundle": {"type": "boolean"},
+        "row_identity_join": {"type": "boolean"},
+        "policy_versions": {"type": "boolean"}
+      }
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "vector_shape",
+        "vector_rows",
+        "catalog_rows",
+        "dimension_profile_rows"
+      ],
+      "properties": {
+        "vector_shape": {
+          "type": "array",
+          "prefixItems": [
+            {"type": "integer", "minimum": 0},
+            {"type": "integer", "minimum": 1}
+          ],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "vector_rows": {"type": "integer", "minimum": 0},
+        "catalog_rows": {"type": "integer", "minimum": 0},
+        "dimension_profile_rows": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

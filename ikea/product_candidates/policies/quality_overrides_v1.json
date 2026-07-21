@@ -1,0 +1,162 @@
+{
+  "schema_version": "ulip-product-quality-overrides/1.0",
+  "policy_version": "quality_overrides_v1",
+  "defaults": {
+    "catalog_quality_status": "supported",
+    "footprint_kind": "rectangle",
+    "dimension_quality_status": "usable_when_positive_axes_are_present",
+    "hard_filter_eligible": "requires_positive_horizontal_axes_and_all_quality_gates"
+  },
+  "category_overrides": {
+    "Bed": {
+      "catalog_quality_status": "blocked",
+      "force_hard_filter_ineligible": true,
+      "reason_codes": ["CATEGORY_DATA_QUALITY_BLOCKED"]
+    },
+    "Sofa": {
+      "catalog_quality_status": "degraded",
+      "force_hard_filter_ineligible": true,
+      "all_rows_shape_fail_closed": true,
+      "reason_codes": ["SOFA_FOOTPRINT_FAIL_CLOSED"]
+    },
+    "Bar Stool": {
+      "catalog_quality_status": "degraded",
+      "force_hard_filter_ineligible": false,
+      "reason_codes": ["CATEGORY_DATA_QUALITY_DEGRADED"]
+    }
+  },
+  "sofa_special_evidence": {
+    "sofa_with_chaise": {
+      "special_flags": ["L_SHAPED", "SOFA_WITH_CHAISE", "SPECIAL_FOOTPRINT_UNMODELED"],
+      "ids": [
+        "67d10ac6a3ae78c12f05add1",
+        "67d10b78a3ae78c12f05ade7",
+        "67d10bd7a3ae78c12f05adf2",
+        "67d10dfda3ae78c12f05ae33",
+        "67d11078a3ae78c12f05ae80",
+        "67d173c37270e1a09493c3bd",
+        "67d174267270e1a09493c3c9",
+        "67d1751f7270e1a09493c3e5",
+        "67d175507270e1a09493c3ea",
+        "67d175b67270e1a09493c3f6"
+      ]
+    },
+    "sectional_corner": {
+      "special_flags": ["L_SHAPED", "SECTIONAL_CORNER", "SPECIAL_FOOTPRINT_UNMODELED"],
+      "ids": [
+        "67d10b92a3ae78c12f05adea",
+        "67d10c01a3ae78c12f05adf7",
+        "67d10cf0a3ae78c12f05ae14",
+        "67d10e67a3ae78c12f05ae40",
+        "67d10ea0a3ae78c12f05ae47",
+        "67d172d47270e1a09493c3a1",
+        "67d172fb7270e1a09493c3a6",
+        "67d1732b7270e1a09493c3ac",
+        "67d173cb7270e1a09493c3be",
+        "67d173d57270e1a09493c3bf"
+      ]
+    },
+    "sectional_chaise_open": {
+      "special_flags": ["L_SHAPED", "SECTIONAL_CHAISE_OPEN", "SPECIAL_FOOTPRINT_UNMODELED", "VARIABLE_FOOTPRINT"],
+      "ids": [
+        "67d10c63a3ae78c12f05ae03",
+        "67d10e1ea3ae78c12f05ae37",
+        "67d10f31a3ae78c12f05ae59",
+        "67d10f5aa3ae78c12f05ae5e",
+        "67d10fe2a3ae78c12f05ae6e",
+        "67d10feaa3ae78c12f05ae6f",
+        "67d173567270e1a09493c3b1",
+        "67d1749c7270e1a09493c3d6",
+        "67d174ac7270e1a09493c3d8",
+        "67d174be7270e1a09493c3da",
+        "67d174fc7270e1a09493c3e1"
+      ]
+    },
+    "chaise_add_on_only": {
+      "special_flags": ["CHAISE_ADD_ON_ONLY", "COMPONENT_ONLY", "SPECIAL_FOOTPRINT_UNMODELED"],
+      "ids": ["67d10d0aa3ae78c12f05ae17"]
+    }
+  },
+  "sofa_unverified_remainder": {
+    "expected_count": 18,
+    "special_flags": ["FOOTPRINT_SHAPE_UNVERIFIED", "SPECIAL_FOOTPRINT_UNMODELED"],
+    "reason_codes": ["SOFA_SHAPE_UNVERIFIED"]
+  },
+  "range_evidence": {
+    "string_parser_collapse": {
+      "ids": [
+        "67d11683a3ae78c12f05af39",
+        "67d117b5a3ae78c12f05af5f",
+        "67d11900a3ae78c12f05af89",
+        "67d11928a3ae78c12f05af8e",
+        "67d11984a3ae78c12f05af9a",
+        "67d11a3ba3ae78c12f05afb2",
+        "67d157cf7270e1a09493c06a",
+        "67d16aa17270e1a09493c2ad"
+      ],
+      "slash_multivalue_ids": [
+        "67d11683a3ae78c12f05af39",
+        "67d117b5a3ae78c12f05af5f",
+        "67d11900a3ae78c12f05af89",
+        "67d11928a3ae78c12f05af8e",
+        "67d11984a3ae78c12f05af9a",
+        "67d11a3ba3ae78c12f05afb2"
+      ],
+      "hyphen_ids": [
+        "67d157cf7270e1a09493c06a",
+        "67d16aa17270e1a09493c2ad"
+      ],
+      "dimension_status": "range_collapsed",
+      "dimension_quality_status": "range_collapsed",
+      "force_hard_filter_ineligible": true
+    },
+    "paired_dict_range": {
+      "ids": [
+        "67d10f31a3ae78c12f05ae59",
+        "67d174ac7270e1a09493c3d8",
+        "67d11726a3ae78c12f05af4d",
+        "67d161237270e1a09493c185",
+        "67d164867270e1a09493c1ee",
+        "67d168667270e1a09493c266",
+        "67d169bc7270e1a09493c290"
+      ],
+      "dimension_status": "suspect",
+      "dimension_quality_status": "suspect",
+      "force_hard_filter_ineligible": true,
+      "special_flags": ["DIMENSION_RANGE_PRESENT"]
+    },
+    "max_only": {
+      "ids": [
+        "67d10bd7a3ae78c12f05adf2",
+        "67d174267270e1a09493c3c9"
+      ],
+      "dimension_status": "suspect",
+      "dimension_quality_status": "suspect",
+      "force_hard_filter_ineligible": true,
+      "special_flags": ["DIMENSION_MAX_ONLY"]
+    }
+  },
+  "expected_inventory": {
+    "total_rows": 733,
+    "bed_rows": 49,
+    "sofa_rows": 50,
+    "known_special_sofa_rows": 32,
+    "unverified_sofa_rows": 18,
+    "bar_stool_rows": 50,
+    "string_parser_collapse_rows": 8,
+    "paired_dict_range_rows": 7,
+    "max_only_rows": 2
+  },
+  "evidence": [
+    {
+      "path": "prior_handoffs/2026-07-14_3090-category-dimension-policy.md",
+      "lines": "29-222",
+      "note": "Bed block, range IDs/classes, and 32 known special Sofa IDs."
+    },
+    {
+      "path": "README_FIRST.md",
+      "lines": "366-427",
+      "note": "Current handoff quality invariants and fail-closed requirement."
+    }
+  ]
+}

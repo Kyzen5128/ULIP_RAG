@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# IKEA ULIP 檢索服務啟動腳本（3090 專用）
+# IKEA ULIP + Core RAG 檢索服務啟動腳本（3090 專用）
 # 用法：bash ikea/run_app_3090.sh [port]        # 預設 port 8000
 #
 # 為什麼需要這些設定（缺一不可）：
@@ -25,7 +25,19 @@ export ULIP_OUTPUT=/mnt/P300/data/ikea_data
 export CUSTOM_OUTPUT=/mnt/P300/data/custom_data
 export USE_MONGO="${USE_MONGO:-0}"
 
+# Core RAG serving bundle.  The RAG2 enhancer was trained with the archived
+# 1,095-row corpus; the newer 8,256-row corpus is not a drop-in replacement.
+export RAG_ENABLED="${RAG_ENABLED:-1}"
+# RAG is loaded and available at /search/text/rag and /search/text/compare.
+# Keep the backward-compatible route on vanilla until an IKEA-specific RAG
+# Stage 2 checkpoint passes the retrieval promotion gate.
+export RAG_DEFAULT_MODE="${RAG_DEFAULT_MODE:-vanilla}"
+export RAG_CORPUS_PROFILE="${RAG_CORPUS_PROFILE:-legacy1095}"
+export RAG_STAGE1_CKPT="${RAG_STAGE1_CKPT:-$REPO/core/outputs/RAG2_Stage1/checkpoint_best.pt}"
+export RAG_CORPUS_DIR="${RAG_CORPUS_DIR:-/mnt/P300/data/ULIP/4090_cheng_archive_20260715/ULIP_RAG/rag_corpus_1095}"
+export RAG_TOP_K="${RAG_TOP_K:-5}"
+
 cd "$REPO/core"
-echo "[run_app_3090] port=$PORT  CKPT=$CKPT"
+echo "[run_app_3090] port=$PORT  CKPT=$CKPT  RAG_ENABLED=$RAG_ENABLED  RAG_PROFILE=$RAG_CORPUS_PROFILE"
 # 注意：ulip env 的 bin/uvicorn entrypoint 是 0-byte 壞檔，須用 python -m uvicorn
 exec python -m uvicorn app_ikea_retrieval:app --host 0.0.0.0 --port "$PORT"

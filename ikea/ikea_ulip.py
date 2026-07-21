@@ -12,6 +12,8 @@ import torchvision.transforms as T
 from PIL import Image
 import trimesh
 
+from ikea.loop2.common import split_name_for_group
+
 from utils.build import DATASETS
 
 # 直接複用 ULIP 現成的點雲工具（與官方流程一致）
@@ -167,7 +169,7 @@ class IkeaULIP(data.Dataset):
     與 ULIP 其他資料集的點雲處理完全對齊（normalize + FPS + train 增強）。
     """
 
-    def __init__(self, config, subset: str = "train"):
+    def __init__(self, config, subset: Optional[str] = None):
         # 來自 YAML（大小寫都支援）
         def _get(cfg, *keys, default=None):
             for k in keys:
@@ -178,6 +180,9 @@ class IkeaULIP(data.Dataset):
         self.json_dir     = _get(config, "JSON_DIR", "json_dir", default="./ulip_output/json")
         self.split_method = _get(config, "SPLIT_METHOD", "split_method", default="hash")
         self.train_ratio  = float(_get(config, "TRAIN_RATIO", "train_ratio", default=0.9))
+        self.val_ratio    = float(_get(config, "VAL_RATIO", "val_ratio", default=max(0.0, 1.0 - self.train_ratio)))
+        self.test_ratio   = float(_get(config, "TEST_RATIO", "test_ratio", default=0.0))
+        self.split_group_field = _get(config, "SPLIT_GROUP_FIELD", "split_group_field", default=None)
         self.require_image= bool(_get(config, "REQUIRE_IMAGE", "require_image", default=False))
         self.render_pick  = _get(config, "RENDER_PICK", "render_pick", default="random")
         self.min_points   = int(_get(config, "MIN_POINTS", "min_points", default=128))
@@ -211,7 +216,9 @@ class IkeaULIP(data.Dataset):
         samples, skip_stats = self._build_samples(all_jsons)
 
         # split（hash）
-        self.samples = self._apply_split(samples, self.subset, self.train_ratio)
+        self.samples = self._apply_split(
+            samples, self.subset, self.train_ratio, self.val_ratio, self.test_ratio
+        )
 
         cats = sorted(list({s["category"] for s in self.samples}))
         logger.info(f"[IkeaULIP] {self.subset} = {len(self.samples)} | cats={len(cats)} | json_dir={self.json_dir}")
@@ -309,24 +316,30 @@ class IkeaULIP(data.Dataset):
                 "render_paths": render_paths,  # 全部 render（可隨機挑）
                 "pointcloud_path": pc_path,
                 "num_points": int(pts.shape[0]),
+                "split_group": str(
+                    ((data.get("meta") or {}).get(self.split_group_field) if self.split_group_field else None)
+                    or data.get("split_group") or _id
+                ),
             })
 
         return samples, skip_stats
 
-    def _apply_split(self, samples: List[dict], subset: str, ratio: float) -> List[dict]:
+    def _apply_split(
+        self, samples: List[dict], subset: str, train_ratio: float,
+        val_ratio: float = 0.0, test_ratio: float = 0.0,
+    ) -> List[dict]:
         if self.split_method != "hash" or subset not in ("train", "val", "test"):
             return samples
 
-        import hashlib
-        train_set, val_set = [], []
-        thr = int(ratio * 10000)
+        if min(train_ratio, val_ratio, test_ratio) < 0 or train_ratio + val_ratio + test_ratio > 1.000001:
+            raise ValueError("TRAIN_RATIO + VAL_RATIO + TEST_RATIO must be in [0, 1]")
+        split_sets = {"train": [], "val": [], "test": []}
 
         for s in samples:
-            key = s["id"]
-            h = int(hashlib.md5(key.encode("utf-8")).hexdigest(), 16) % 10000
-            (train_set if h < thr else val_set).append(s)
+            key = s.get("split_group") or s["id"]
+            split_sets[split_name_for_group(key, train_ratio, val_ratio, test_ratio)].append(s)
 
-        return train_set if subset == "train" else val_set
+        return split_sets[subset]
 
     # ---------- Dataset 介面 ----------
     def __len__(self) -> int:
@@ -402,9 +415,11 @@ class IkeaULIP(data.Dataset):
         # 點雲
         pc = self._load_pointcloud(s["pointcloud_path"])
 
-        # 影像：若有 render_paths 且 render_pick=random，每次隨機挑一張
+        # 影像：訓練時可隨機抽視角；val/test 必須固定，否則 best
+        # checkpoint 會受每次評估的隨機視角影響。image_path 已是排序後
+        # render_paths 的第一張，因此非 train split 自然保持 deterministic。
         img_path = s["image_path"]
-        if self.render_pick == "random":
+        if self.render_pick == "random" and self.subset == "train":
             rlist = s.get("render_paths") or []
             if rlist:
                 img_path = random.choice(rlist)

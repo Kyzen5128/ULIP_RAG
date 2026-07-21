@@ -1,0 +1,181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:v2t-camera:ulip-product-candidate-response:1.0",
+  "title": "ULIP to V2T product candidate response v1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "request_id",
+    "status",
+    "query_metadata",
+    "results",
+    "warnings",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "request_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["ok", "partial", "no_match"]},
+    "query_metadata": {"$ref": "#/$defs/query_metadata"},
+    "results": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {"$ref": "#/$defs/product"}
+    },
+    "warnings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]*$"}
+    },
+    "provenance": {"$ref": "#/$defs/provenance"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"status": {"const": "no_match"}}},
+      "then": {"properties": {"results": {"maxItems": 0}}},
+      "else": {"properties": {"results": {"minItems": 1}}}
+    }
+  ],
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "query_metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tokenizer_id", "token_count", "truncated", "eot_present"],
+      "properties": {
+        "tokenizer_id": {"type": "string", "minLength": 1},
+        "token_count": {"type": "integer", "minimum": 1, "maximum": 77},
+        "truncated": {"const": false},
+        "eot_present": {"const": true}
+      }
+    },
+    "dimensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unit", "width", "depth", "height"],
+      "properties": {
+        "unit": {"const": "mm"},
+        "width": {"type": "number", "exclusiveMinimum": 0},
+        "depth": {"type": "number", "exclusiveMinimum": 0},
+        "height": {
+          "oneOf": [
+            {"type": "null"},
+            {"type": "number", "exclusiveMinimum": 0}
+          ]
+        }
+      }
+    },
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "product_id",
+        "name",
+        "category",
+        "matched_request_category",
+        "category_tier",
+        "retrieval_score",
+        "dimensions",
+        "dimension_status",
+        "height_policy",
+        "catalog_quality_status",
+        "hard_filter_eligible",
+        "footprint_kind",
+        "special_flags"
+      ],
+      "properties": {
+        "product_id": {"type": "string", "minLength": 1},
+        "name": {"type": "string", "minLength": 1},
+        "category": {"type": "string", "minLength": 1},
+        "matched_request_category": {"type": "string", "minLength": 1},
+        "category_tier": {"enum": ["primary", "secondary"]},
+        "retrieval_score": {"type": "number", "minimum": -1, "maximum": 1},
+        "dimensions": {
+          "oneOf": [{"type": "null"}, {"$ref": "#/$defs/dimensions"}]
+        },
+        "dimension_status": {
+          "enum": [
+            "complete", "partial", "missing", "suspect", "range_collapsed",
+            "special_unmodeled"
+          ]
+        },
+        "height_policy": {"enum": ["optional", "required", "unknown"]},
+        "catalog_quality_status": {
+          "enum": ["supported", "degraded", "blocked", "unknown"]
+        },
+        "hard_filter_eligible": {"type": "boolean"},
+        "footprint_kind": {
+          "enum": [
+            "rectangle", "round_bounding_box", "polygon_bounding_box",
+            "special_unmodeled"
+          ]
+        },
+        "special_flags": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "allowed_yaws_deg": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"enum": [0, 90, 180, 270]}
+        },
+        "catalog_metadata": {"type": "object"}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"dimension_status": {"const": "complete"}},
+            "required": ["dimension_status"]
+          },
+          "then": {
+            "properties": {
+              "dimensions": {
+                "allOf": [
+                  {"$ref": "#/$defs/dimensions"},
+                  {"properties": {"height": {"type": "number"}}}
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {"footprint_kind": {"const": "special_unmodeled"}},
+            "required": ["footprint_kind"]
+          },
+          "then": {
+            "properties": {
+              "hard_filter_eligible": {"const": false},
+              "dimension_status": {"const": "special_unmodeled"}
+            }
+          }
+        }
+      ]
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_checkpoint_sha256",
+        "vector_bundle_sha256",
+        "catalog_manifest_sha256",
+        "dimension_bundle_sha256",
+        "tokenizer_bundle_sha256",
+        "category_policy_version",
+        "dimension_axis_policy_version"
+      ],
+      "properties": {
+        "model_checkpoint_sha256": {"$ref": "#/$defs/sha256"},
+        "vector_bundle_sha256": {"$ref": "#/$defs/sha256"},
+        "catalog_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "dimension_bundle_sha256": {"$ref": "#/$defs/sha256"},
+        "tokenizer_bundle_sha256": {"$ref": "#/$defs/sha256"},
+        "category_policy_version": {"type": "string", "minLength": 1},
+        "dimension_axis_policy_version": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

@@ -476,13 +476,32 @@ from sentence_transformers import SentenceTransformer
 class RAGRetriever:
     """這個類別只負責從 FAISS 索引中檢索文件ID,不進行神經網路編碼"""
     def __init__(self, corpus_dir, top_k=5, device='cuda'):
+        if top_k <= 0:
+            raise ValueError(f"top_k must be positive, got {top_k}")
         self.top_k = top_k
         index_path = os.path.join(corpus_dir, 'corpus_index.faiss')
+        if not os.path.isfile(index_path):
+            raise FileNotFoundError(f"RAG FAISS index not found: {index_path}")
         print(f"INFO: RAGRetriever - Loading FAISS index from '{index_path}'...")
         self.index = faiss.read_index(index_path)
         # 用於查詢的輕量級編碼器
+        if str(device).startswith('cuda') and not torch.cuda.is_available():
+            device = 'cpu'
         self.query_encoder = SentenceTransformer('all-MiniLM-L6-v2', device=device)
+        query_dim = self.query_encoder.get_sentence_embedding_dimension()
+        if query_dim is not None and self.index.d != query_dim:
+            raise ValueError(
+                f"RAG dimension mismatch: FAISS index is {self.index.d}d, "
+                f"all-MiniLM-L6-v2 produces {query_dim}d"
+            )
         print("INFO: RAGRetriever is ready.")
+
+    def validate_corpus(self, corpus):
+        if self.index.ntotal != len(corpus):
+            raise ValueError(
+                f"RAG corpus/index row mismatch: corpus={len(corpus)}, "
+                f"index={self.index.ntotal}"
+            )
 
     @torch.no_grad()
     def retrieve_docs(self, raw_text_queries, corpus):
@@ -506,7 +525,8 @@ class RAGRetriever:
         
         #  現在傳遞處理過的字符串列表給 sentence_transformers
         query_embeddings = self.query_encoder.encode(processed_queries, convert_to_numpy=True, show_progress_bar=False)
-        query_embeddings = query_embeddings / np.linalg.norm(query_embeddings, axis=1, keepdims=True)
+        norms = np.linalg.norm(query_embeddings, axis=1, keepdims=True)
+        query_embeddings = query_embeddings / np.clip(norms, 1e-12, None)
         _, indices = self.index.search(query_embeddings.astype('float32'), self.top_k)
         
         # 返回每個查詢對應的文檔列表
@@ -699,6 +719,7 @@ class ULIP_with_RAG_Enhancer(ULIP_WITH_IMAGE):
         corpus_path = os.path.join(rag_corpus_dir, 'rag_corpus.jsonl')
         with open(corpus_path, 'r', encoding='utf-8') as f:
             self.rag_corpus = [json.loads(line) for line in f]
+        self.retriever.validate_corpus(self.rag_corpus)
 
     def encode_text_base(self, text_tokens):
         """一個輔助函數,返回投影前的基礎特徵"""
@@ -821,38 +842,38 @@ def ULIP_PointBERT_RAG(args):
         for param in model.point_encoder.parameters():
             param.requires_grad = True
         model.pc_projection.requires_grad = True
-        
-        # 載入 Stage 1 訓練好的 rag_enhancer 權重
-        if hasattr(args, 'stage1_ckpt_path') and args.stage1_ckpt_path and os.path.isfile(args.stage1_ckpt_path):
-            print(f"--- INFO: Loading Stage 1 checkpoint from '{args.stage1_ckpt_path}' ---")
-            ckpt = torch.load(args.stage1_ckpt_path, map_location='cpu', weights_only=False)
-            
-            #  rag_enhancer 權重的載入
-            if 'state_dict' in ckpt:
-                state_dict = ckpt['state_dict']
-            else:
-                state_dict = ckpt
-            
-            # 提取 rag_enhancer 的權重並移除前綴
-            enhancer_weights = {}
-            for k, v in state_dict.items():
-                if 'rag_enhancer' in k:
-                    # 移除 'module.' 和 'rag_enhancer.' 前綴
-                    new_key = k.replace('module.', '').replace('rag_enhancer.', '')
-                    enhancer_weights[new_key] = v
-            
-            if enhancer_weights:
-                missing_keys, unexpected_keys = model.rag_enhancer.load_state_dict(enhancer_weights, strict=False)
-                if missing_keys:
-                    print(f"--- WARNING: Missing keys in rag_enhancer: {missing_keys} ---")
-                if unexpected_keys:
-                    print(f"--- WARNING: Unexpected keys in rag_enhancer: {unexpected_keys} ---")
-                print("--- INFO: Stage 1 rag_enhancer weights loaded successfully. ---")
-            else:
-                print(f"WARNING: Could not find 'rag_enhancer' weights in '{args.stage1_ckpt_path}'.")
-                print("Available keys:", [k for k in state_dict.keys() if 'rag_enhancer' in k])
-        else:
-            print("WARNING: Stage 2 started without a valid --stage1_ckpt_path. rag_enhancer will use initial weights.")
+
+        # Stage 2 is only meaningful with a fully trained Stage 1 enhancer.
+        # The previous implementation merely warned and silently continued
+        # with random enhancer weights, producing a valid-looking but invalid
+        # experiment.  Treat the Stage 1 artifact as a required dependency.
+        stage1_ckpt_path = getattr(args, 'stage1_ckpt_path', None)
+        if not stage1_ckpt_path:
+            raise ValueError("Stage 2 requires --stage1_ckpt_path")
+        if not os.path.isfile(stage1_ckpt_path):
+            raise FileNotFoundError(
+                f"Stage 1 checkpoint not found: {stage1_ckpt_path}"
+            )
+
+        print(f"--- INFO: Loading Stage 1 checkpoint from '{stage1_ckpt_path}' ---")
+        ckpt = torch.load(stage1_ckpt_path, map_location='cpu', weights_only=False)
+        state_dict = ckpt.get('state_dict', ckpt)
+
+        enhancer_weights = {}
+        for key, value in state_dict.items():
+            normalized_key = key.replace('module.', '')
+            if normalized_key.startswith('rag_enhancer.'):
+                enhancer_weights[normalized_key[len('rag_enhancer.'):]] = value
+
+        if not enhancer_weights:
+            raise RuntimeError(
+                f"Checkpoint has no rag_enhancer weights: {stage1_ckpt_path}"
+            )
+
+        # strict=True is intentional: an incomplete/mismatched enhancer must
+        # never be accepted for Stage 2.
+        model.rag_enhancer.load_state_dict(enhancer_weights, strict=True)
+        print("--- INFO: Stage 1 rag_enhancer weights loaded successfully. ---")
             
     else:
         #  更清楚的錯誤信息
@@ -884,8 +905,6 @@ def ULIP_PointBERT_RAG(args):
 # =====================================================================
 # ================= END: RAG  =========================================
 # =====================================================================
-
-
 
 
 

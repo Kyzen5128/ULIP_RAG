@@ -1,0 +1,1010 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "P300 資料集全量審查：V2T × ULIP_RAG 2.0",
+    "description": "依 P300 實際檔案、程式引用、metadata 完整度與 2.0 目標所做的唯讀工程審查。",
+    "generatedAt": "2026-07-16T18:00:00+08:00",
+    "cards": [
+      {
+        "id": "free_space",
+        "description": "df 觀測到的 P300 可配置空間；不含未來訓練 scratch 與 checkpoints 預留。",
+        "dataset": "headline_metrics",
+        "sourceId": "audit_snapshot_sql",
+        "metrics": [
+          {
+            "label": "P300 可用空間（GiB）",
+            "field": "free_gib",
+            "format": "number"
+          }
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "id": "top_level_storage",
+        "title": "P300 /data 主要目錄配置容量",
+        "subtitle": "Mat_Synth 與 ULIP 合計占絕大多數配置容量；子目錄容量不可再與此圖加總。",
+        "type": "horizontalBar",
+        "dataset": "top_level_sizes",
+        "sourceId": "audit_snapshot_sql",
+        "valueFormat": "number",
+        "palette": {
+          "kind": "sequential",
+          "name": "allocated-size"
+        },
+        "encodings": {
+          "x": {
+            "field": "dataset",
+            "type": "nominal",
+            "label": "P300 目錄"
+          },
+          "y": {
+            "field": "size_gib",
+            "type": "quantitative",
+            "label": "Allocated GiB"
+          },
+          "tooltip": [
+            {
+              "field": "share_of_data",
+              "type": "quantitative",
+              "label": "占 /data",
+              "format": "percent"
+            }
+          ]
+        }
+      },
+      {
+        "id": "review_targets",
+        "title": "大型資料／產物的用途審查",
+        "subtitle": "這些是不同父目錄下的審查單位；部分為父子關係，不能相加推算可回收空間。",
+        "type": "horizontalBar",
+        "dataset": "review_target_sizes",
+        "sourceId": "audit_snapshot_sql",
+        "valueFormat": "number",
+        "palette": {
+          "kind": "categorical",
+          "name": "review-class"
+        },
+        "encodings": {
+          "x": {
+            "field": "asset",
+            "type": "nominal",
+            "label": "審查單位"
+          },
+          "y": {
+            "field": "size_gib",
+            "type": "quantitative",
+            "label": "Allocated GiB"
+          },
+          "tooltip": [
+            {
+              "field": "disposition",
+              "type": "nominal",
+              "label": "2.0 判定"
+            }
+          ]
+        }
+      }
+    ],
+    "tables": [
+      {
+        "id": "dataset_disposition",
+        "title": "全量用途判定",
+        "subtitle": "容量欄為 allocated GiB；父子目錄會重疊，不可直接加總。",
+        "dataset": "dataset_disposition",
+        "sourceId": "audit_snapshot_sql",
+        "defaultSort": {
+          "field": "size_gib",
+          "direction": "desc"
+        },
+        "density": "compact",
+        "columns": [
+          {
+            "field": "path",
+            "label": "P300 路徑",
+            "type": "text"
+          },
+          {
+            "field": "size_gib",
+            "label": "GiB",
+            "format": "number"
+          },
+          {
+            "field": "content",
+            "label": "實際內容",
+            "type": "text"
+          },
+          {
+            "field": "role",
+            "label": "2.0 角色",
+            "type": "text"
+          },
+          {
+            "field": "decision",
+            "label": "判定",
+            "type": "text"
+          },
+          {
+            "field": "reason",
+            "label": "理由／限制",
+            "type": "text"
+          }
+        ]
+      },
+      {
+        "id": "quality_issues",
+        "title": "阻擋直接使用的資料品質問題",
+        "subtitle": "P0 會讓 training/index/evaluation 結果失真；P1 必須在正式資料凍結前解決。",
+        "dataset": "quality_issues",
+        "sourceId": "audit_snapshot_sql",
+        "defaultSort": {
+          "field": "priority",
+          "direction": "asc"
+        },
+        "density": "compact",
+        "columns": [
+          {
+            "field": "priority",
+            "label": "優先級",
+            "type": "text"
+          },
+          {
+            "field": "dataset",
+            "label": "資料",
+            "type": "text"
+          },
+          {
+            "field": "issue",
+            "label": "實測問題",
+            "type": "text"
+          },
+          {
+            "field": "impact",
+            "label": "影響",
+            "type": "text"
+          },
+          {
+            "field": "required_action",
+            "label": "使用前要求",
+            "type": "text"
+          }
+        ]
+      },
+      {
+        "id": "storage_review",
+        "title": "儲存清理／歸檔審查順序",
+        "subtitle": "全部只是候選；本輪沒有刪除授權，也沒有對 P300 做任何修改。",
+        "dataset": "storage_review",
+        "sourceId": "audit_snapshot_sql",
+        "defaultSort": {
+          "field": "review_order",
+          "direction": "asc"
+        },
+        "density": "compact",
+        "columns": [
+          {
+            "field": "review_order",
+            "label": "順序",
+            "format": "number"
+          },
+          {
+            "field": "asset",
+            "label": "候選",
+            "type": "text"
+          },
+          {
+            "field": "size_gib",
+            "label": "GiB",
+            "format": "number"
+          },
+          {
+            "field": "classification",
+            "label": "類型",
+            "type": "text"
+          },
+          {
+            "field": "precondition",
+            "label": "移動／刪除前條件",
+            "type": "text"
+          }
+        ]
+      },
+      {
+        "id": "missing_data",
+        "title": "ULIP_RAG 2.0 仍缺的真正訓練／索引資料",
+        "subtitle": "P300 現有資料無法單獨完成新 catalog 與空間關係學習。",
+        "dataset": "missing_data",
+        "sourceId": "audit_snapshot_sql",
+        "defaultSort": {
+          "field": "stage_order",
+          "direction": "asc"
+        },
+        "density": "compact",
+        "columns": [
+          {
+            "field": "stage_order",
+            "label": "順序",
+            "format": "number"
+          },
+          {
+            "field": "data_asset",
+            "label": "需要的資料",
+            "type": "text"
+          },
+          {
+            "field": "required_fields",
+            "label": "最低欄位／標註",
+            "type": "text"
+          },
+          {
+            "field": "purpose",
+            "label": "用途",
+            "type": "text"
+          },
+          {
+            "field": "current_state",
+            "label": "目前狀態",
+            "type": "text"
+          }
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "id": "audit_snapshot_sql",
+        "label": "報告 snapshot 的可重現 SQLite 投影",
+        "path": "reports/p300_dataset_audit_20260716/audit_snapshot.sql"
+      },
+      {
+        "id": "p300_inventory",
+        "label": "P300 唯讀檔案與配置容量盤點",
+        "path": "P300/data"
+      },
+      {
+        "id": "ikea_baseline",
+        "label": "舊 IKEA733 資產與 serving manifest",
+        "path": "P300/data/ikea_data"
+      },
+      {
+        "id": "abo_bundle",
+        "label": "ABO 本機 metadata、license 與 3D bundle",
+        "path": "P300/data/Mat_Synth/data/abo"
+      },
+      {
+        "id": "combined_local_audit",
+        "label": "P300 資料品質與 ULIP 程式引用交叉審查",
+        "path": "ULIP_RAG"
+      },
+      {
+        "id": "ulip2_design",
+        "label": "ULIP_RAG 2.0 spatial learning 設計與本機落差",
+        "path": "ULIP_RAG/HANDOFF_3090_TO_CLAUDE_ULIP_RAG_2_0_SPATIAL_LEARNING_DESIGN_2026-07-16.md"
+      },
+      {
+        "id": "front_official",
+        "label": "3D-FRONT 官方專案與論文",
+        "href": "https://openaccess.thecvf.com/content/ICCV2021/html/Fu_3D-FRONT_3D_Furnished_Rooms_With_layOuts_and_semaNTics_ICCV_2021_paper.html"
+      },
+      {
+        "id": "front_license",
+        "label": "3D-FRONT 官方研究授權",
+        "href": "https://gw.alicdn.com/bao/uploaded/TB1ZJUfK.z1gK0jSZLeXXb9kVXa.pdf"
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# P300 資料集全量審查：V2T × ULIP_RAG 2.0\n\n**結論先講：P300 目前沒有一套可以直接當作 ULIP_RAG 2.0 正式新家具庫的完整資料。** 現有 IKEA733 必須保留作 1.0 baseline；ABO 是目前最有價值的商品側輔助預訓練來源；新正式 catalog、房間關係資料與人類偏好標註仍需另外準備。"
+      },
+      {
+        "id": "technical_summary",
+        "type": "markdown",
+        "body": "## 技術摘要\n\nIKEA733 留作 1.0 回歸；ABO 經 QA 後可作 2.0 商品側預訓練。舊 RAG、CAMERA、Objaverse 不進新正式索引。材質資料不進核心，smoke、V3、失效 corpus 禁止直接訓練。新 catalog、房間關係與偏好標註仍缺。"
+      },
+      {
+        "id": "metrics",
+        "type": "metric-strip",
+        "cardIds": [
+          "free_space"
+        ]
+      },
+      {
+        "id": "capacity_warning",
+        "type": "markdown",
+        "sourceId": "p300_inventory",
+        "body": "## 關鍵發現與容量風險\n\nP300 總容量約 **1,832.70 GiB**、已用 **1,388.56 GiB**、可用 **350.97 GiB**。若沿用舊 IKEA 每商品完整保存 dense PLY、30-view render、GLB、影像與 metadata 的政策，外推 10,000 件約需 **409.98 GiB**，還沒算訓練 scratch、checkpoint 與 index 就已超出現有可用空間約 **59.01 GiB**。新 catalog 必須先定義保存層級，避免每件長期保留可重建的 dense 中間產物。"
+      },
+      {
+        "id": "top_chart",
+        "type": "chart",
+        "chartId": "top_level_storage"
+      },
+      {
+        "id": "target_chart",
+        "type": "chart",
+        "chartId": "review_targets"
+      },
+      {
+        "id": "scope",
+        "type": "markdown",
+        "body": "## 範圍、資料與判定定義\n\n本輪唯讀掃描 P300 的資料、README、manifest、metadata、程式引用、樣本與配置容量。沒有查改 MongoDB、沒有啟停服務，也沒有改寫 P300。判定分為：現行基線、初始化／評估、條件式預訓練、資料重生、非 2.0 核心，以及清理／歸檔候選。"
+      },
+      {
+        "id": "methodology",
+        "type": "markdown",
+        "body": "## 方法\n\n以 allocated bytes 量容量，並核對 join、重複、缺檔、失效路徑、split、欄位覆蓋與授權。再回看 loader／config 分辨 training、indexing、evaluation、serving 真正依賴。學習只處理語意、風格、關係、偏好；公制安全由規則處理。"
+      },
+      {
+        "id": "disposition_table",
+        "type": "table",
+        "tableId": "dataset_disposition"
+      },
+      {
+        "id": "abo_finding",
+        "type": "markdown",
+        "sourceId": "abo_bundle",
+        "body": "## ABO 是最有價值的現成輔助資料，但不是新正式 catalog\n\nABO 有 **7,953** 個可 join listing 的原始 GLB，mesh extent 完整，規格定義 `+Y` 向上、`+Z` 為自然正面；listing 的 dimensions/style/material/color 覆蓋約為 **97.9% / 64.6% / 75.8% / 93.5%**。這使它適合商品 shape、semantic、style、material 與 orientation 預訓練。 但 ABO 混有大量非家具或模糊類別；嚴格家具集合會隨 taxonomy 定義落在約 4.2k。少數 listing 尺寸有極端錯值，Trellis mesh/voxel 又被正規化到 unit AABB。正式使用必須以 raw GLB extent 為主要公制來源、凍結 category allowlist、做尺寸 outlier QA，並保留 CC BY 4.0 attribution。"
+      },
+      {
+        "id": "quality_table",
+        "type": "table",
+        "tableId": "quality_issues"
+      },
+      {
+        "id": "rag_corpus",
+        "type": "markdown",
+        "body": "## Corpus 與 RAG 的正確處置\n\n`CAMERA_3D` 證實 corpus 是自動生成：先合併 Objaverse metadata 與 LLaVA captions，再用 MiniLM 選 query/corpus 並 flatten。**所以你的記憶是對的：新家具的 corpus 應重新生成。** 但不能直接複製舊輸出，因為舊資料高度重複、路徑指向不存在的 `/home/klooom/...`，caption 亦有類別互相矛盾。 新 catalog 的正確順序是：canonical product record → 經 provenance 的結構化文案／caption → 去重與品質檢查 → train/validation/test 依 product 分割 → text embeddings → FAISS/index manifest。舊 1,095 corpus、704,757-vector HF bundle、CAMERA corpus與 IKEA RAG checkpoints只保留作方法／回歸基線。"
+      },
+      {
+        "id": "storage_table",
+        "type": "table",
+        "tableId": "storage_review"
+      },
+      {
+        "id": "storage_policy",
+        "type": "markdown",
+        "body": "## 儲存策略建議\n\n先不刪任何東西。第一波只做 owner 與可重建性盤點：失敗的 Hugging Face cache、DC-AE outputs/checkpoints、重複 CAMERA bundle、MatSeg outputs。ShapeNet renders、Mat_Synth PBR、DuMaS、Objaverse 都可能屬於其他研究工作或代價高昂的可重建資產，應先產生 file manifest＋SHA-256、確認遠端來源可恢復，再決定搬到 cold storage。 新 catalog 建議長期保存：原始合法來源、immutable product manifest、raw GLB、精簡的 canonical 8192-point PLY、多視角代表圖、metadata/corpus、split 與 hashes。Dense PLY、全視角深度中間檔、voxel/latent 等只在訓練確實消費時保留，否則列為可重建衍生層。"
+      },
+      {
+        "id": "missing_table",
+        "type": "table",
+        "tableId": "missing_data"
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "body": "## 限制與穩健性\n\n這是本機 snapshot，未驗證遠端可完整重抓。ABO 家具數會隨 taxonomy 變動，約 4.17k–4.20k，正式值尚未確認。V3 是否為新家具庫尚未確認。3D-FRONT 不在 P300，授權與版本待決。容量列含父子重疊，不可直接相加。"
+      },
+      {
+        "id": "next_steps",
+        "type": "markdown",
+        "body": "## 建議下一步\n\n實作順序是：先定正式來源與商品數；再凍結商品 schema；接著整理 ABO 輔助 bundle；重新生成新 corpus、向量與 index；補場景關係與偏好監督；維持公制安全規則；最後在大量重抓前完成 storage freeze plan。"
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## 仍需使用者決定\n\n需要決定正式家具來源、商品規模、保存層級、ABO 是否只作預訓練、是否採 3D-FRONT、各舊專案的儲存 owner，以及風格／關係／偏好各自可投入的人工標註量。"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-07-16T18:00:00+08:00",
+    "status": "ready",
+    "datasets": {
+      "headline_metrics": [
+        {
+          "free_gib": 350.97,
+          "used_ratio": 0.8,
+          "baseline_items": 733,
+          "abo_models": 7953,
+          "ready_catalogs": 0
+        }
+      ],
+      "top_level_sizes": [
+        {
+          "dataset": "Mat_Synth",
+          "size_gib": 661.5,
+          "share_of_data": 0.476
+        },
+        {
+          "dataset": "ULIP",
+          "size_gib": 558.36,
+          "share_of_data": 0.402
+        },
+        {
+          "dataset": "mat_seg",
+          "size_gib": 78.03,
+          "share_of_data": 0.056
+        },
+        {
+          "dataset": "objaverse",
+          "size_gib": 57.46,
+          "share_of_data": 0.041
+        },
+        {
+          "dataset": "ikea_data",
+          "size_gib": 30.05,
+          "share_of_data": 0.022
+        },
+        {
+          "dataset": "CAMERA_3D",
+          "size_gib": 2.94,
+          "share_of_data": 0.002
+        },
+        {
+          "dataset": "ikea_data_V3",
+          "size_gib": 0.2,
+          "share_of_data": 0.0001
+        }
+      ],
+      "review_target_sizes": [
+        {
+          "asset": "ShapeNet 多視角 renders",
+          "size_gib": 401.49,
+          "disposition": "舊 generic pretrain；優先 cold-archive 審查"
+        },
+        {
+          "asset": "Mat_Synth PBR maps",
+          "size_gib": 240.33,
+          "disposition": "其他材質專案；2.0 不直接需要"
+        },
+        {
+          "asset": "DC-AE outputs + checkpoints",
+          "size_gib": 167.97,
+          "disposition": "其他專案產物；owner 審查候選"
+        },
+        {
+          "asset": "ABO raw",
+          "size_gib": 155.2,
+          "disposition": "2.0 高價值條件式預訓練"
+        },
+        {
+          "asset": "CAMERA_Dataset_HF",
+          "size_gib": 98.92,
+          "disposition": "三份內容層重複的 legacy bundle"
+        },
+        {
+          "asset": "mat_seg",
+          "size_gib": 78.03,
+          "disposition": "材質分割支線；非 spatial core"
+        },
+        {
+          "asset": "Objaverse cache",
+          "size_gib": 57.46,
+          "disposition": "舊 CAMERA cache；非 production"
+        },
+        {
+          "asset": "Mat_Synth latents",
+          "size_gib": 52.66,
+          "disposition": "可重建材質衍生物"
+        },
+        {
+          "asset": "ABO Trellis",
+          "size_gib": 45.23,
+          "disposition": "選用 views/captions；normalized geometry 非公制"
+        },
+        {
+          "asset": "舊 IKEA733",
+          "size_gib": 30.05,
+          "disposition": "1.0 regression baseline"
+        },
+        {
+          "asset": "HF incomplete cache（allocated）",
+          "size_gib": 16.91,
+          "disposition": "高信心 cache cleanup candidate"
+        }
+      ],
+      "dataset_disposition": [
+        {
+          "path": "ULIP › ShapeNet triplets",
+          "size_gib": 413.53,
+          "content": "52,470 PC、約 30 views/shape、caption",
+          "role": "可選 generic ULIP replay",
+          "decision": "條件式預訓練",
+          "reason": "unit-sphere/旋轉增強移除公制尺度與朝向；test 11 筆全與 train 重疊"
+        },
+        {
+          "path": "Mat_Synth › PBR maps",
+          "size_gib": 240.33,
+          "content": "3,593 組 4K PBR 材質 maps",
+          "role": "未來 material augmentation",
+          "decision": "非 2.0 核心",
+          "reason": "沒有商品、尺寸、房間或 placement 配對；一組材質不完整"
+        },
+        {
+          "path": "Mat_Synth › DC-AE",
+          "size_gib": 168.07,
+          "content": "DC-AE checkpoints、視覺化與程式",
+          "role": "其他材質專案",
+          "decision": "其他專案",
+          "reason": "非 ULIP/V2T 資料；owner 確認後才可歸檔"
+        },
+        {
+          "path": "Mat_Synth › ABO raw",
+          "size_gib": 155.2,
+          "content": "7,953 raw GLB、3D metadata、listings、license",
+          "role": "商品 shape/style/material/orientation 輔助預訓練",
+          "decision": "條件式預訓練",
+          "reason": "有 canonical axes 與 extent；需家具 taxonomy、尺寸 outlier、attribution QA"
+        },
+        {
+          "path": "ULIP › CAMERA HF bundle",
+          "size_gib": 98.92,
+          "content": "Git LFS、tar、extracted IKEA/corpus 三層",
+          "role": "legacy published artifact",
+          "decision": "provenance 歸檔",
+          "reason": "README 與實際內容不一致；704,757 vectors 對 705,627 logical texts"
+        },
+        {
+          "path": "mat_seg",
+          "size_gib": 78.03,
+          "content": "DuMaS EXR、SAM2 material segmentation、outputs",
+          "role": "可選 V2T material perception",
+          "decision": "非 2.0 核心",
+          "reason": "無商品 ID、metric layout、pose、relation、placement；DuMaS license 尚未確認"
+        },
+        {
+          "path": "objaverse",
+          "size_gib": 57.46,
+          "content": "7,358 GLB download cache",
+          "role": "舊 CAMERA generic 3D cache",
+          "decision": "舊資料可選",
+          "reason": "缺 12 CAMERA objects；無本機家具 taxonomy、尺度/front QA、per-object license manifest"
+        },
+        {
+          "path": "Mat_Synth › material latents",
+          "size_gib": 52.66,
+          "content": "3,592 組材質 latents",
+          "role": "其他材質生成專案",
+          "decision": "可重建衍生物",
+          "reason": "2.0 不消費；須 owner 與可重建驗證"
+        },
+        {
+          "path": "Mat_Synth › ABO Trellis",
+          "size_gib": 45.23,
+          "content": "24-view renders、caption、voxel/mesh、shape latent",
+          "role": "商品多模態 auxiliary pretrain",
+          "decision": "選擇性使用",
+          "reason": "geometry 正規化，不能作公制尺寸；metadata 狀態過期、broken raw symlink"
+        },
+        {
+          "path": "ikea_data（IKEA733）",
+          "size_gib": 30.05,
+          "content": "舊 733 商品 images、JSON、GLB、PLY、renders、vectors",
+          "role": "1.0 regression 與 E2E baseline",
+          "decision": "現行 baseline",
+          "reason": "不是新 catalog；dense raw PLY 占 85.4%，新流程不應照單複製"
+        },
+        {
+          "path": "ULIP › HF cache",
+          "size_gib": 16.91,
+          "content": "Hugging Face download cache、lock、incomplete",
+          "role": "無訓練角色",
+          "decision": "cache 清理候選",
+          "reason": "10 個 incomplete sparse downloads；刪前仍要確認沒有進行中下載"
+        },
+        {
+          "path": "ULIP › 4090 archive",
+          "size_gib": 15.72,
+          "content": "舊 source、git bundle、Core RAG corpus/index/checkpoints",
+          "role": "方法與 provenance",
+          "decision": "provenance 保留",
+          "reason": "包含歷史證據；不應作 2.0 active runtime"
+        },
+        {
+          "path": "ULIP › ULIP-1",
+          "size_gib": 8.71,
+          "content": "SLIP/PointBERT 初始權重、ModelNet40",
+          "role": "初始化與 smoke/evaluation",
+          "decision": "初始化／評估保留",
+          "reason": "現有 config/code 仍引用；ModelNet 不是 catalog 或 spatial supervision"
+        },
+        {
+          "path": "CAMERA_3D",
+          "size_gib": 2.94,
+          "content": "舊 VGG/BERT/FAISS RAG code、corpus、partial checkpoints",
+          "role": "舊 semantic 方法基線",
+          "decision": "舊方法留、資料重生",
+          "reason": "91.67% corpus rows 重複；所有 view/model paths 在本機失效；caption 有矛盾"
+        },
+        {
+          "path": "ULIP › IKEA RAG stage 2",
+          "size_gib": 1.63,
+          "content": "IKEA RAG stage-2 best/last checkpoints",
+          "role": "舊 experimental reranker baseline",
+          "decision": "實驗基線",
+          "reason": "非 Product Candidates production，亦非新 catalog checkpoint"
+        },
+        {
+          "path": "ULIP › IKEA RAG stage 1",
+          "size_gib": 1.33,
+          "content": "IKEA RAG stage-1 best/last checkpoints",
+          "role": "舊 experimental semantic baseline",
+          "decision": "實驗基線",
+          "reason": "新 catalog 語料與 embedding space 必須重訓／重建"
+        },
+        {
+          "path": "ULIP › Product Candidates",
+          "size_gib": 0.81,
+          "content": "正式 IKEA733 v1 deployment bundle",
+          "role": "現行跨機 Product Candidates serving",
+          "decision": "現行 baseline",
+          "reason": "七項 ready checks 與 E2E 仍依賴；2.0 acceptance 前不可移除"
+        },
+        {
+          "path": "ikea_data_V3",
+          "size_gib": 0.2,
+          "content": "2,516 JPG，無 manifest/metadata/3D",
+          "role": "可能的新 catalog 圖片 seed",
+          "decision": "原始 seed 未確認",
+          "reason": "只有 2,501 unique images；缺 product join、dimensions、category、GLB/PLY、license"
+        },
+        {
+          "path": "semantic_corpus.jsonl",
+          "size_gib": 0.023,
+          "content": "88,422-row top-level CAMERA corpus copy",
+          "role": "無獨立角色",
+          "decision": "重複清理候選",
+          "reason": "與 CAMERA datasets 內兩份檔案 SHA-256 相同"
+        },
+        {
+          "path": "custom_data",
+          "size_gib": 0.0013,
+          "content": "1 筆 image/GLB/PLY/JSON smoke upload",
+          "role": "API contract smoke test",
+          "decision": "只作 smoke／排除訓練",
+          "reason": "text=chair 但 category=Sofa，故意不一致"
+        },
+        {
+          "path": "checkpoints、outputs",
+          "size_gib": 0.00001,
+          "content": "空目錄",
+          "role": "無",
+          "decision": "EMPTY",
+          "reason": "不是資料集，無容量壓力"
+        }
+      ],
+      "quality_issues": [
+        {
+          "priority": "P0",
+          "dataset": "新 production catalog",
+          "issue": "P300 不存在完整、immutable、帶多模態與公制空間 metadata 的新家具全集",
+          "impact": "不能開始正式 2.0 retraining/indexing",
+          "required_action": "先定來源、schema、數量、授權與 crawl snapshot"
+        },
+        {
+          "priority": "P0",
+          "dataset": "ShapeNet triplets",
+          "issue": "test.txt 11 筆全部出現在 train；2 個缺檔與 2 個 malformed extra；10 個 PC 無 caption mapping",
+          "impact": "現有 accuracy 不能當 held-out 泛化證據",
+          "required_action": "重建 product-disjoint split 與完整 manifest"
+        },
+        {
+          "priority": "P0",
+          "dataset": "CAMERA corpus",
+          "issue": "88,422 rows 只有 7,369 unique object-text pairs，約 91.67% 重複；路徑全指舊機器",
+          "impact": "訓練 sample weighting 失真，3090 本機不可重現",
+          "required_action": "對新 catalog 從 canonical records 重生並去重"
+        },
+        {
+          "priority": "P0",
+          "dataset": "ikea_data_V3",
+          "issue": "只有圖片且無 product manifest、category、dimensions、3D、caption、license",
+          "impact": "不可做 ULIP 3D training、indexing 或 spatial hard gate",
+          "required_action": "找回 crawler manifest 或全面重抓"
+        },
+        {
+          "priority": "P0",
+          "dataset": "ABO Trellis",
+          "issue": "mesh/voxel 被正規化到 unit AABB",
+          "impact": "不能用於公制尺寸或 footprint gate",
+          "required_action": "尺寸必須 join raw GLB extent／經 QA 的 listing SI dimensions"
+        },
+        {
+          "priority": "P0",
+          "dataset": "custom_data",
+          "issue": "smoke text 與 category 故意矛盾",
+          "impact": "污染 train/eval 指標與 category supervision",
+          "required_action": "以 manifest policy 明確排除"
+        },
+        {
+          "priority": "P1",
+          "dataset": "ABO",
+          "issue": "家具 taxonomy 尚未凍結；不同 reduction/allowlist 得到約 4.17k–4.20k strict furniture，listing 亦有尺寸極端值",
+          "impact": "dataset size、category labels 與 fit ground truth 不穩定",
+          "required_action": "凍結 taxonomy、多 listing reduction、unit conversion 與 outlier policy"
+        },
+        {
+          "priority": "P1",
+          "dataset": "ABO Trellis",
+          "issue": "7,953 raw symlink 全指舊 `/mnt/data1`；metadata cond_rendered=False 與實體完整 renders 矛盾；1 筆主 render 缺失",
+          "impact": "loader 若信 metadata/path 會錯誤跳過或讀不到資料",
+          "required_action": "重寫 immutable relative manifest，不改原 bundle"
+        },
+        {
+          "priority": "P1",
+          "dataset": "ABO voxel PLY",
+          "issue": "3,008/7,953 少於 8,192 points",
+          "impact": "現有固定點數 loader 可能失敗或造成不一致 sampling",
+          "required_action": "定義 deterministic resample/pad 並記錄 seed/version"
+        },
+        {
+          "priority": "P1",
+          "dataset": "CAMERA_Dataset_HF",
+          "issue": "README 宣稱內容與實際 extracted IKEA duplicate 不一致；logical texts 比 vectors 多 870",
+          "impact": "無法可靠 join corpus row 與 embedding/index",
+          "required_action": "只保留 provenance，禁止直接接 2.0 runtime"
+        },
+        {
+          "priority": "P1",
+          "dataset": "Objaverse",
+          "issue": "CAMERA selected 7,370 IDs 仍缺 12 GLB；無 per-object license、尺度/front/category QA",
+          "impact": "不可當 production catalog 或 metric spatial GT",
+          "required_action": "若使用，先建 license-aware allowlist 與完整 manifest"
+        },
+        {
+          "priority": "P1",
+          "dataset": "DuMaS",
+          "issue": "本機未找到 dataset license，scene statistics summary 與 rows 不一致",
+          "impact": "不可直接納入可發布模型的正式資料聲明",
+          "required_action": "確認來源／授權並重算統計；目前只列 optional"
+        },
+        {
+          "priority": "P2",
+          "dataset": "Mat_Synth PBR",
+          "issue": "3,593 組中一組只有 basecolor，缺其餘四 maps；本機來源/license manifest 未見",
+          "impact": "material augmentation 需排除不完整樣本並補 provenance",
+          "required_action": "只在 material 支線啟動時處理"
+        },
+        {
+          "priority": "P2",
+          "dataset": "ULIP HF cache",
+          "issue": "10 個 incomplete sparse downloads、69 lock files",
+          "impact": "占空間且不是訓練資料",
+          "required_action": "確認無 active download 後再取得清理授權"
+        }
+      ],
+      "storage_review": [
+        {
+          "review_order": 1,
+          "asset": "ULIP › HF incomplete/cache",
+          "size_gib": 16.91,
+          "classification": "cache 清理候選",
+          "precondition": "確認沒有 active download；記錄 cache 路徑後由使用者授權"
+        },
+        {
+          "review_order": 2,
+          "asset": "Mat_Synth › DC-AE outputs/checkpoints",
+          "size_gib": 167.97,
+          "classification": "其他專案產物",
+          "precondition": "取得 Mat_Synth owner、保留 best/final/metrics manifest、驗證 archive"
+        },
+        {
+          "review_order": 3,
+          "asset": "CAMERA HF › LFS/tar/extracted",
+          "size_gib": 98.92,
+          "classification": "重複 legacy bundle",
+          "precondition": "凍結一份 canonical hash bundle並驗證 Hugging Face remote 可恢復"
+        },
+        {
+          "review_order": 4,
+          "asset": "MatSeg outputs",
+          "size_gib": 6.47,
+          "classification": "其他專案產物",
+          "precondition": "owner 決定要保留哪些 best/last checkpoints"
+        },
+        {
+          "review_order": 5,
+          "asset": "Mat_Synth latents",
+          "size_gib": 52.66,
+          "classification": "可重建衍生物",
+          "precondition": "確認生成程式、base maps、checkpoint、seed與重建時間"
+        },
+        {
+          "review_order": 6,
+          "asset": "Objaverse + CAMERA legacy",
+          "size_gib": 60.4,
+          "classification": "舊基線",
+          "precondition": "確定不再重跑舊 CAMERA；保留 UID/license/failed manifest與必要 checkpoint"
+        },
+        {
+          "review_order": 7,
+          "asset": "舊 IKEA dense raw PLY",
+          "size_gib": 25.66,
+          "classification": "baseline 衍生物",
+          "precondition": "先證明可由 GLB deterministic 重建，並保留 8192 PLY、hash與 v1 E2E bundle"
+        },
+        {
+          "review_order": 8,
+          "asset": "ShapeNet rendered views",
+          "size_gib": 401.49,
+          "classification": "昂貴舊預訓練資料",
+          "precondition": "確認 2.0 是否 replay image/shape；凍結 captions/PC/split/remote restore 後再 cold archive"
+        },
+        {
+          "review_order": 9,
+          "asset": "Mat_Synth PBR maps、DuMaS",
+          "size_gib": 310.24,
+          "classification": "其他研究來源",
+          "precondition": "只有各自 owner 明確確認不用且已有授權／restore manifest 才能處理"
+        }
+      ],
+      "missing_data": [
+        {
+          "stage_order": 1,
+          "data_asset": "新 production furniture catalog",
+          "required_fields": "product_id、source/license、category、SI dimensions、raw GLB、images、text、style/material/color、hash",
+          "purpose": "2.0 正式 training/index/serving 商品全集",
+          "current_state": "缺；IKEA733 是舊 baseline，V3 只有圖片，ABO 只是 auxiliary 候選"
+        },
+        {
+          "stage_order": 2,
+          "data_asset": "Canonical geometry bundle",
+          "required_fields": "up/front axes、metric scale、AABB/footprint、8192-point PLY、rotation policy、source GLB hash",
+          "purpose": "orientation learning 與 deterministic size/collision gate",
+          "current_state": "ABO 部分具備；新 catalog 尚缺"
+        },
+        {
+          "stage_order": 3,
+          "data_asset": "新 semantic RAG corpus",
+          "required_fields": "product_id、query/corpus text、source fields、generator/prompt/model、dedup、language、split",
+          "purpose": "semantic/style retrieval、FAISS index與 provenance",
+          "current_state": "須由新 catalog 自動生成＋QA；舊 corpus不可沿用"
+        },
+        {
+          "stage_order": 4,
+          "data_asset": "Room/layout relation pretraining",
+          "required_fields": "room、object instances、category、bbox、center、yaw、walls/doors、derived relation graph",
+          "purpose": "家具－家具關係與 layout prior",
+          "current_state": "P300 無；3D-FRONT 尚未下載且授權待決"
+        },
+        {
+          "stage_order": 5,
+          "data_asset": "V2T real scene held-out set",
+          "required_fields": "room_id、metric coordinate、occupancy/free spots、existing furniture、anchors、door/window、query、expected placements",
+          "purpose": "真實跨機 evaluation，不作小樣本主訓練",
+          "current_state": "目前理解僅約 7 scenes；本輪未在 P300 找到"
+        },
+        {
+          "stage_order": 6,
+          "data_asset": "Style／relation／human preference supervision",
+          "required_fields": "positive/negative pairs、relative relation label、ranked placements、annotator/protocol/confidence",
+          "purpose": "訓練規則做不到的 learned heads/reranker",
+          "current_state": "P300 無；需合成與人工標註"
+        },
+        {
+          "stage_order": 7,
+          "data_asset": "Spatial rule evaluation fixtures",
+          "required_fields": "metric size、orientation、valid/invalid spots、collision、door swing、path clearance、reason codes",
+          "purpose": "驗證 hard gate，避免 learned score 翻案",
+          "current_state": "P300 無完整 2.0 fixtures；Product Candidates v1 只有商品候選基線"
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "audit_snapshot_sql",
+      "path": "reports/p300_dataset_audit_20260716/audit_snapshot.sql",
+      "query": {
+        "engine": "sqlite",
+        "id": "p300-audit-snapshot-projection",
+        "description": "從已審查的 canonical artifact snapshot 投影 headline、charts 與 audit tables；SQL 檔包含每個 native block 的實際 SELECT。",
+        "executed_at": "2026-07-16T18:00:00+08:00",
+        "language": "sql",
+        "tables_used": [
+          "artifact.json.snapshot.datasets"
+        ]
+      }
+    },
+    {
+      "id": "p300_inventory",
+      "path": "P300/data",
+      "query": {
+        "engine": "filesystem",
+        "id": "p300-readonly-audit-20260716",
+        "description": "唯讀掃描 P300 /data 的 allocated bytes、file counts、metadata joins、duplicates、missing files 與重要 manifests。",
+        "executed_at": "2026-07-16T18:00:00+08:00",
+        "language": "bash",
+        "filters": [
+          "不讀 lost+found",
+          "不修改、不刪除、不移動 P300",
+          "容量使用 allocated bytes"
+        ],
+        "metric_definitions": [
+          "GiB = allocated bytes / 1,073,741,824",
+          "share_of_data = top-level allocated bytes / P300 data allocated bytes"
+        ]
+      }
+    },
+    {
+      "id": "ikea_baseline",
+      "path": "P300/data/ikea_data",
+      "query": {
+        "engine": "filesystem",
+        "id": "ikea733-baseline-audit-20260716",
+        "description": "核對 IKEA733 assets、vector/meta join、deployment hashes 與 serving 依賴。",
+        "executed_at": "2026-07-16T18:00:00+08:00",
+        "language": "bash",
+        "filters": [
+          "現行 v1 baseline",
+          "不查改 MongoDB"
+        ]
+      }
+    },
+    {
+      "id": "abo_bundle",
+      "path": "P300/data/Mat_Synth/data/abo",
+      "query": {
+        "engine": "filesystem",
+        "id": "abo-local-quality-audit-20260716",
+        "description": "核對 ABO 3D model/listing joins、field coverage、axes conventions、license、category distribution、dimensions 與 Trellis derived assets。",
+        "executed_at": "2026-07-16T18:00:00+08:00",
+        "language": "bash",
+        "filters": [
+          "product/model-level aggregation",
+          "多 listing reduction 尚未凍結",
+          "不修改原始 bundle"
+        ]
+      }
+    },
+    {
+      "id": "combined_local_audit",
+      "path": "ULIP_RAG",
+      "query": {
+        "engine": "filesystem+code-review",
+        "id": "p300-ulip-cross-audit-20260716",
+        "description": "交叉核對 P300 資料、ULIP_RAG loaders/configs、legacy CAMERA/RAG scripts 與 serving manifests。",
+        "executed_at": "2026-07-16T18:00:00+08:00",
+        "language": "bash+python-source-review",
+        "filters": [
+          "read-only",
+          "不啟動服務",
+          "不修改 Mongo/vectors"
+        ]
+      }
+    },
+    {
+      "id": "ulip2_design",
+      "path": "ULIP_RAG/HANDOFF_3090_TO_CLAUDE_ULIP_RAG_2_0_SPATIAL_LEARNING_DESIGN_2026-07-16.md",
+      "query": {
+        "engine": "document-review",
+        "id": "ulip2-spatial-data-gap-review",
+        "description": "將 P300 實際資料能力對照 ULIP_RAG 2.0 的 semantic/style、relation、preference 與 deterministic spatial gate 需求。",
+        "executed_at": "2026-07-16T18:00:00+08:00",
+        "language": "markdown"
+      }
+    },
+    {
+      "id": "front_official",
+      "href": "https://openaccess.thecvf.com/content/ICCV2021/html/Fu_3D-FRONT_3D_Furnished_Rooms_With_layOuts_and_semaNTics_ICCV_2021_paper.html",
+      "query": {
+        "engine": "official-web-document",
+        "id": "3d-front-official-paper",
+        "description": "官方 3D-FRONT 論文，用於評估未來 layout/relation prior 資料來源；該資料目前不在 P300。",
+        "executed_at": "2026-07-16T18:00:00+08:00"
+      }
+    },
+    {
+      "id": "front_license",
+      "href": "https://gw.alicdn.com/bao/uploaded/TB1ZJUfK.z1gK0jSZLeXXb9kVXa.pdf",
+      "query": {
+        "engine": "official-web-document",
+        "id": "3d-front-license",
+        "description": "官方 3D-FRONT 研究使用條款；採用前需依實際用途進一步審查。",
+        "executed_at": "2026-07-16T18:00:00+08:00"
+      }
+    }
+  ],
+  "package_info": {
+    "originUrl": "artifact://p300-dataset-audit-20260716",
+    "controls": {
+      "edit": true,
+      "refresh": false
+    }
+  }
+}

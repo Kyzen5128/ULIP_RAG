@@ -1,0 +1,105 @@
+{
+  "schema_version": "ulip-category-policy/1.0",
+  "policy_version": "v2t36_to_ikea15_v1",
+  "normalization": {
+    "casefold": true,
+    "strip": true,
+    "internal_whitespace": "preserve",
+    "cross_tier_policy": {
+      "raw_request_term_casefold_duplicate": "reject_http_422",
+      "distinct_aliases_same_canonical": "primary_precedence_drop_secondary",
+      "canonical_overlap_warning": "CATEGORY_CANONICAL_POOL_DEDUPED"
+    }
+  },
+  "canonical_categories": [
+    "Bar Stool",
+    "Bed",
+    "Bench",
+    "Bookshelf",
+    "Dining Chair",
+    "Dining Table",
+    "Filing Cabinet",
+    "Office Desk",
+    "Recliner",
+    "Sideboard",
+    "Sofa",
+    "Storage Ottoman",
+    "TV Stand",
+    "Vanity Table",
+    "Wardrobe"
+  ],
+  "request_terms": {
+    "sofa": {"status": "enabled", "canonical_categories": ["Sofa"]},
+    "couch": {"status": "enabled", "canonical_categories": ["Sofa"]},
+    "loveseat": {"status": "enabled", "canonical_categories": ["Sofa"]},
+    "armchair": {
+      "status": "ambiguous_unresolved",
+      "canonical_categories": [],
+      "review_candidates": ["Dining Chair", "Recliner"]
+    },
+    "accent chair": {
+      "status": "ambiguous_unresolved",
+      "canonical_categories": [],
+      "review_candidates": ["Dining Chair", "Recliner"]
+    },
+    "lounge chair": {
+      "status": "ambiguous_unresolved",
+      "canonical_categories": [],
+      "review_candidates": ["Dining Chair", "Recliner"]
+    },
+    "chair": {"status": "controlled_unsupported", "canonical_categories": []},
+    "stool": {"status": "controlled_unsupported", "canonical_categories": []},
+    "bench": {"status": "enabled", "canonical_categories": ["Bench"]},
+    "ottoman": {"status": "enabled", "canonical_categories": ["Storage Ottoman"]},
+    "table": {
+      "status": "ambiguous_unresolved",
+      "canonical_categories": [],
+      "review_candidates": ["Dining Table"]
+    },
+    "dining table": {"status": "enabled", "canonical_categories": ["Dining Table"]},
+    "coffee table": {"status": "catalog_gap_unsupported", "canonical_categories": []},
+    "side table": {"status": "catalog_gap_unsupported", "canonical_categories": []},
+    "end table": {"status": "catalog_gap_unsupported", "canonical_categories": []},
+    "console table": {"status": "catalog_gap_unsupported", "canonical_categories": []},
+    "desk": {"status": "enabled", "canonical_categories": ["Office Desk"]},
+    "nightstand": {"status": "catalog_gap_unsupported", "canonical_categories": []},
+    "bedside table": {"status": "catalog_gap_unsupported", "canonical_categories": []},
+    "bedside cabinet": {"status": "catalog_gap_unsupported", "canonical_categories": []},
+    "wardrobe": {"status": "enabled", "canonical_categories": ["Wardrobe"]},
+    "closet": {"status": "enabled", "canonical_categories": ["Wardrobe"]},
+    "armoire": {"status": "enabled", "canonical_categories": ["Wardrobe"]},
+    "dresser": {
+      "status": "ambiguous_unresolved",
+      "canonical_categories": [],
+      "review_candidates": ["Filing Cabinet", "Sideboard"]
+    },
+    "cabinet": {
+      "status": "ambiguous_unresolved",
+      "canonical_categories": [],
+      "review_candidates": ["Filing Cabinet", "Sideboard"]
+    },
+    "bookshelf": {"status": "enabled", "canonical_categories": ["Bookshelf"]},
+    "bookcase": {"status": "enabled", "canonical_categories": ["Bookshelf"]},
+    "shelf": {"status": "enabled", "canonical_categories": ["Bookshelf"]},
+    "shelving unit": {"status": "enabled", "canonical_categories": ["Bookshelf"]},
+    "tv stand": {"status": "enabled", "canonical_categories": ["TV Stand"]},
+    "media console": {"status": "enabled", "canonical_categories": ["TV Stand"]},
+    "bed": {"status": "mapped_blocked", "canonical_categories": ["Bed"]},
+    "bed frame": {"status": "mapped_blocked", "canonical_categories": ["Bed"]},
+    "lamp": {"status": "catalog_gap_unsupported", "canonical_categories": []},
+    "floor lamp": {"status": "catalog_gap_unsupported", "canonical_categories": []},
+    "rug": {"status": "catalog_gap_unsupported", "canonical_categories": []}
+  },
+  "evidence": [
+    {
+      "path": "prior_handoffs/2026-07-14_3090-integration-response.md",
+      "lines": "341-387",
+      "note": "Observed IKEA-15 inventory and conservative V2T mapping review."
+    },
+    {
+      "path": "contracts/retrieval_request_v2.0.schema.json",
+      "lines": "242-280",
+      "note": "Authoritative 36 request terms from the 5090 handoff package."
+    }
+  ]
+}

@@ -13,6 +13,7 @@ import os
 import json
 import glob
 import argparse
+import hashlib
 from pathlib import Path
 from typing import List, Dict, Optional
 from collections import defaultdict
@@ -307,26 +308,55 @@ def load_ulip_model(ckpt_path: str, fallback_model_name: str, device: torch.devi
     state = ckpt.get("state_dict", ckpt)
     state = {k.replace("module.", ""): v for k, v in state.items()}
 
-    if "args" in ckpt and hasattr(ckpt["args"], "model"):
-        mdl_name = ckpt["args"].model
-        setattr(ckpt["args"], "evaluate_3d", True)
-        model = getattr(models, mdl_name)(args=ckpt["args"])
-        print(f"Using model from checkpoint: {mdl_name}")
+    saved_args = ckpt.get("args") if isinstance(ckpt, dict) else None
+    if isinstance(saved_args, dict):
+        mdl_name = saved_args.get("model", fallback_model_name)
     else:
-        from argparse import Namespace
-        fake = Namespace(model=fallback_model_name)
-        model = getattr(models, fallback_model_name)(args=fake)
-        print(f"Using fallback model from args: {fallback_model_name}")
+        mdl_name = getattr(saved_args, "model", fallback_model_name)
 
-    missing, unexpected = model.load_state_dict(state, strict=False)
-    if missing:
-        print("[load_state_dict] Missing keys:", missing)
-    if unexpected:
-        print("[load_state_dict] Unexpected keys:", unexpected)
+    # IKEA RAG Stage 2 changes the PointBERT branch but serving injects the
+    # enhancer on the query side.  Product vector generation only needs the
+    # 462-key ULIP base; constructing ULIP_PointBERT_RAG here would also load
+    # MiniLM/FAISS unnecessarily and couples an offline PC build to a corpus.
+    is_rag_checkpoint = mdl_name == "ULIP_PointBERT_RAG" or any(
+        key.startswith("rag_enhancer.") for key in state
+    )
+    factory_name = "ULIP_PointBERT" if is_rag_checkpoint else mdl_name
+    from argparse import Namespace
+    factory_args = Namespace(model=factory_name, evaluate_3d=True)
+    model = getattr(models, factory_name)(args=factory_args)
+    base_state = {
+        key: value for key, value in state.items()
+        if not key.startswith("rag_enhancer.")
+    }
+    model.load_state_dict(base_state, strict=True)
+    print(
+        f"Using checkpoint model={mdl_name}; vector encoder factory={factory_name}; "
+        f"rag_checkpoint={is_rag_checkpoint}"
+    )
 
     model = model.to(device).eval()
     print("Model loaded.")
-    return model
+    checkpoint_info = {
+        "path": str(Path(ckpt_path).expanduser().resolve()),
+        "sha256": _sha256_file(ckpt_path),
+        "checkpoint_model": mdl_name,
+        "vector_encoder_factory": factory_name,
+        "rag_checkpoint": is_rag_checkpoint,
+        "provenance": ckpt.get("provenance") if isinstance(ckpt, dict) else None,
+    }
+    return model, checkpoint_info
+
+
+def _sha256_file(path: str, chunk_size: int = 8 * 1024 * 1024) -> str:
+    digest = hashlib.sha256()
+    with open(path, "rb") as handle:
+        while True:
+            chunk = handle.read(chunk_size)
+            if not chunk:
+                break
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 # ==========================
@@ -683,7 +713,7 @@ def main():
     print(f"TXT usable    : {stats['txt_usable']}  | no_txt    : {len(items)-stats['txt_usable']}")
 
     # 2) 載入 ULIP 模型
-    model = load_ulip_model(args.ckpt, args.model, device)
+    model, checkpoint_info = load_ulip_model(args.ckpt, args.model, device)
     tokenizer = SimpleTokenizer()
     img_tfm = build_image_transform(args.img_size)
 
@@ -710,7 +740,15 @@ def main():
 
     # 4) schema / 總覽
     schema = {
+        "schema_version": "ikea-ulip-vectors/2.0",
         "modalities": args.modalities,
+        "checkpoint": checkpoint_info,
+        "pointcloud": {
+            "npoints": args.npoints,
+            "sampler": args.pc_sampler,
+            "use_height": bool(args.use_height),
+        },
+        "text_embedding_mode": "vanilla",
         "dims": {
             m: (int(np.load(os.path.join(args.out_dir, f"vectors_{m}.npy")).shape[1])
                 if os.path.exists(os.path.join(args.out_dir, f"vectors_{m}.npy")) else 0)

@@ -9,12 +9,14 @@
 '''
 import argparse
 from collections import OrderedDict
+from collections.abc import Mapping
 import math
 import time
 import wandb
 import os
 import json
 import collections
+import shutil
 import numpy as np
 
 import torch
@@ -71,6 +73,18 @@ def get_args_parser():
     parser.add_argument('--disable-amp', action='store_true',
                         help='disable mixed-precision training (requires more memory and compute)')
     parser.add_argument('--resume', default='', type=str, help='path to resume from')
+    parser.add_argument(
+        '--save-freq', default=5, type=int,
+        help='epochs between rolling checkpoint.pt updates (best/final always save)',
+    )
+    parser.add_argument(
+        '--archive-freq', default=50, type=int,
+        help='epochs between immutable checkpoint_<epoch>.pt archives; 0 disables archives',
+    )
+    parser.add_argument(
+        '--init-checkpoint', default='', type=str,
+        help='load model weights only, then start a new run at epoch 0 (for IKEA 1.0 -> 2.0 transfer)',
+    )
 
     # System
     parser.add_argument('--print-freq', default=10, type=int, help='print frequency')
@@ -100,10 +114,52 @@ def _using_ikea_dataset(args):
     return _is_ikea(args.pretrain_dataset_name) or _is_ikea(args.validate_dataset_name)
 
 
-best_acc1 = 0
+best_acc1 = -1.0
+
+
+def _load_trusted_checkpoint(path, map_location='cpu'):
+    """Load repository-owned checkpoints across the PyTorch 2.6 default change."""
+    try:
+        return torch.load(path, map_location=map_location, weights_only=False)
+    except TypeError:
+        return torch.load(path, map_location=map_location)
+
+
+def _atomic_save_checkpoint(state, path):
+    """Publish one checkpoint without exposing a partially written file."""
+    path = os.path.abspath(path)
+    temporary = path + '.tmp'
+    torch.save(state, temporary)
+    os.replace(temporary, path)
+
+
+def _atomic_copy_checkpoint(source, destination):
+    destination = os.path.abspath(destination)
+    temporary = destination + '.tmp'
+    shutil.copyfile(source, temporary)
+    os.replace(temporary, destination)
+
+
+def _save_rolling_checkpoint(state, is_best, output_dir, archive=False):
+    """Keep a bounded, resumable checkpoint set for long IKEA runs."""
+    if not utils.is_main_process():
+        return
+    rolling = os.path.join(output_dir, 'checkpoint.pt')
+    _atomic_save_checkpoint(state, rolling)
+    if is_best:
+        _atomic_copy_checkpoint(rolling, os.path.join(output_dir, 'checkpoint_best.pt'))
+    if archive:
+        _atomic_copy_checkpoint(
+            rolling, os.path.join(output_dir, 'checkpoint_{}.pt'.format(state['epoch']))
+        )
 
 def main(args):
     utils.init_distributed_mode(args)
+
+    if args.save_freq <= 0:
+        raise ValueError('--save-freq must be positive')
+    if args.archive_freq < 0:
+        raise ValueError('--archive-freq must be non-negative')
 
     global best_acc1
 
@@ -129,6 +185,23 @@ def main(args):
     print("=> creating model: {}".format(args.model))
     model = getattr(models, args.model)(args=args)
     model.cuda(args.gpu)
+
+    if args.resume and args.init_checkpoint:
+        raise ValueError('--resume and --init-checkpoint are mutually exclusive')
+    if args.init_checkpoint:
+        if not os.path.isfile(args.init_checkpoint):
+            raise FileNotFoundError(f"init checkpoint not found: {args.init_checkpoint}")
+        print("=> initializing model weights from '{}'".format(args.init_checkpoint))
+        init_checkpoint = _load_trusted_checkpoint(args.init_checkpoint)
+        init_state = init_checkpoint.get('state_dict', init_checkpoint)
+        if not isinstance(init_state, Mapping):
+            raise TypeError('init checkpoint has no mapping state_dict')
+        init_state = {
+            (name[7:] if name.startswith('module.') else name): value
+            for name, value in init_state.items()
+        }
+        model.load_state_dict(init_state, strict=True)
+        print('=> initialized weights only; optimizer/scaler/epoch were not restored')
 
     if args.distributed:
         model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu], bucket_cap_mb=200, find_unused_parameters=False)
@@ -157,7 +230,7 @@ def main(args):
     if args.resume:
         if os.path.isfile(args.resume):
             print("=> loading resume checkpoint '{}'".format(args.resume))
-            checkpoint = torch.load(args.resume, map_location='cpu')
+            checkpoint = _load_trusted_checkpoint(args.resume)
             epoch = checkpoint['epoch'] if 'epoch' in checkpoint else 0
             args.start_epoch = epoch
             result = model.load_state_dict(checkpoint['state_dict'], strict=False)
@@ -173,7 +246,7 @@ def main(args):
         latest = os.path.join(args.output_dir, 'checkpoint.pt')
         if os.path.isfile(latest):
             print("=> loading latest checkpoint '{}'".format(latest))
-            latest_checkpoint = torch.load(latest, map_location='cpu')
+            latest_checkpoint = _load_trusted_checkpoint(latest)
             args.start_epoch = latest_checkpoint['epoch']
             model.load_state_dict(latest_checkpoint['state_dict'])
             optimizer.load_state_dict(latest_checkpoint['optimizer'])
@@ -277,27 +350,32 @@ def main(args):
                 best_epoch = epoch
             best_acc1 = max(acc1, best_acc1)
 
-            if is_best or epoch % 50 == 0:
-                print("=> saving checkpoint")
-                utils.save_on_master({
-                        'epoch': epoch + 1,
-                        'state_dict': model.state_dict(),
-                        'optimizer' : optimizer.state_dict(),
-                        'scaler': scaler.state_dict(),
-                        'best_acc1': best_acc1,
-                        'args': args,
-                    }, is_best, args.output_dir)
-
-            if epoch + 1 == args.epochs:
-                print("=> saving last checkpoint")
-                utils.save_on_master({
-                    'epoch': 'last',
+            should_save = (
+                is_best
+                or (epoch + 1) % args.save_freq == 0
+                or epoch + 1 == args.epochs
+            )
+            if should_save:
+                print("=> saving rolling checkpoint")
+                state = {
+                    'epoch': epoch + 1,
                     'state_dict': model.state_dict(),
                     'optimizer': optimizer.state_dict(),
                     'scaler': scaler.state_dict(),
                     'best_acc1': best_acc1,
                     'args': args,
-                }, is_best, args.output_dir)
+                }
+                archive = bool(
+                    args.archive_freq and (epoch + 1) % args.archive_freq == 0
+                )
+                _save_rolling_checkpoint(
+                    state, is_best, args.output_dir, archive=archive,
+                )
+                if epoch + 1 == args.epochs and utils.is_main_process():
+                    _atomic_copy_checkpoint(
+                        os.path.join(args.output_dir, 'checkpoint.pt'),
+                        os.path.join(args.output_dir, 'checkpoint_last.pt'),
+                    )
 
         log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
                      **{f'test_{k}': v for k, v in val_stats.items()},
@@ -489,7 +567,7 @@ def test_zeroshot_3d_core(test_loader, model, tokenizer, args=None):
 
 
 def test_zeroshot_3d(args):
-    ckpt = torch.load(args.test_ckpt_addr, map_location='cpu')
+    ckpt = _load_trusted_checkpoint(args.test_ckpt_addr)
     state_dict = OrderedDict()
     for k, v in ckpt['state_dict'].items():
         state_dict[k.replace('module.', '')] = v
@@ -521,7 +599,7 @@ def test_zeroshot_3d(args):
 
 
 def test_zeroshot_3d_ulip2(args):
-    ckpt = torch.load(args.test_ckpt_addr, map_location='cpu')
+    ckpt = _load_trusted_checkpoint(args.test_ckpt_addr)
     state_dict = OrderedDict()
     for k, v in ckpt['state_dict'].items():
         state_dict[k.replace('module.', '')] = v

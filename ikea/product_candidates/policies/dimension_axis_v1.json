@@ -1,0 +1,111 @@
+{
+  "schema_version": "ulip-dimension-axis-policy/1.0",
+  "policy_version": "dimension_axis_v1",
+  "source": {
+    "database": "furniture_db",
+    "collection": "ikea_product_v2_2026q2",
+    "field": "meta.dimensions_mm",
+    "unit": "mm",
+    "horizontal_fields": ["length", "width"],
+    "vertical_field": "height"
+  },
+  "wire": {
+    "unit": "mm",
+    "width_rule": "max(source.length, source.width)",
+    "depth_rule": "min(source.length, source.width)",
+    "height_rule": "source.height_or_null",
+    "unit_conversion_count_at_5090_boundary": 1,
+    "allowed_axis_yaws_deg": [0, 90, 180, 270],
+    "yaw_semantics": "footprint_axis_only_no_front_or_facing_claim"
+  },
+  "hard_filter_eligible_semantics": "safe_for_current_rectangular_footprint_hard_gate_only",
+  "missing_height_behavior": {
+    "optional": "footprint_only_allowed_if_all_other_quality_gates_pass",
+    "required": "fail_closed_HEIGHT_UNVERIFIED",
+    "unknown": "fail_closed_HEIGHT_UNVERIFIED"
+  },
+  "height_policy_by_canonical_category": {
+    "Bar Stool": {
+      "policy": "optional",
+      "source": "explicit_all_other_categories_optional_review"
+    },
+    "Bed": {
+      "policy": "optional",
+      "source": "explicit_all_other_categories_optional_review_but_category_blocked"
+    },
+    "Bench": {
+      "policy": "optional",
+      "source": "explicit_all_other_categories_optional_review"
+    },
+    "Bookshelf": {
+      "policy": "required",
+      "source": "explicit_tall_storage_required_review"
+    },
+    "Dining Chair": {
+      "policy": "optional",
+      "source": "explicit_all_other_categories_optional_review"
+    },
+    "Dining Table": {
+      "policy": "optional",
+      "source": "explicit_all_other_categories_optional_review"
+    },
+    "Filing Cabinet": {
+      "policy": "unknown",
+      "source": "conservative_generic_cabinet_height_ambiguity"
+    },
+    "Office Desk": {
+      "policy": "optional",
+      "source": "explicit_all_other_categories_optional_review"
+    },
+    "Recliner": {
+      "policy": "optional",
+      "source": "explicit_all_other_categories_optional_review"
+    },
+    "Sideboard": {
+      "policy": "optional",
+      "source": "explicit_all_other_categories_optional_review"
+    },
+    "Sofa": {
+      "policy": "optional",
+      "source": "explicit_all_other_categories_optional_review_but_shape_fail_closed"
+    },
+    "Storage Ottoman": {
+      "policy": "optional",
+      "source": "explicit_all_other_categories_optional_review"
+    },
+    "TV Stand": {
+      "policy": "optional",
+      "source": "explicit_all_other_categories_optional_review"
+    },
+    "Vanity Table": {
+      "policy": "optional",
+      "source": "explicit_all_other_categories_optional_review"
+    },
+    "Wardrobe": {
+      "policy": "required",
+      "source": "explicit_tall_storage_required_review"
+    }
+  },
+  "unverified_fields": {
+    "front_direction": "not_available",
+    "canonical_yaw": "not_available",
+    "non_rectangular_footprint": "not_modeled"
+  },
+  "evidence": [
+    {
+      "path": "prior_handoffs/2026-07-15_v2t-uliprag-spatial-review-HANDOFF.md",
+      "lines": "100-107",
+      "note": "Wardrobe/bookcase-family required; all other known low furniture optional."
+    },
+    {
+      "path": "prior_handoffs/2026-07-15_v2t-uliprag-q4-resolutions-EXEC-HANDOFF.md",
+      "lines": "49-59",
+      "note": "Generic cabinet is unknown; required only when a tall subtype is known."
+    },
+    {
+      "path": "README_FIRST.md",
+      "lines": "323-346",
+      "note": "Current 5090 strict consumer rejects missing height for required or unknown."
+    }
+  ]
+}

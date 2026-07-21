@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "request_id": "fixture-product-candidates-001",
+  "status": "no_match",
+  "query_metadata": {
+    "tokenizer_id": "fixture-tokenizer",
+    "token_count": 14,
+    "truncated": false,
+    "eot_present": true
+  },
+  "results": [],
+  "warnings": ["CATEGORY_DATA_QUALITY_BLOCKED"],
+  "provenance": {
+    "model_checkpoint_sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+    "vector_bundle_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+    "catalog_manifest_sha256": "3333333333333333333333333333333333333333333333333333333333333333",
+    "dimension_bundle_sha256": "4444444444444444444444444444444444444444444444444444444444444444",
+    "tokenizer_bundle_sha256": "5555555555555555555555555555555555555555555555555555555555555555",
+    "category_policy_version": "v2t36_to_ikea15_v1",
+    "dimension_axis_policy_version": "dimension_axis_v1"
+  }
+}
