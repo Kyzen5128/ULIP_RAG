@@ -1,143 +1,181 @@
 === RAG 語料庫統計報告 ===
 
-總條目數: 1134
-平均信心度: 0.688
+總條目數: 8086
+平均信心度: 0.714
 
 === 類別分布 ===
-cabinet: 84 (7.4%)
-bed: 73 (6.4%)
-lamp: 73 (6.4%)
-table: 72 (6.3%)
-wardrobe: 72 (6.3%)
-shelf: 71 (6.3%)
-bench: 70 (6.2%)
-chair: 69 (6.1%)
-desk: 69 (6.1%)
-bookshelf: 69 (6.1%)
-sofa: 67 (5.9%)
-dresser: 66 (5.8%)
-stool: 61 (5.4%)
-coffee table: 61 (5.4%)
-armchair: 57 (5.0%)
-nightstand: 52 (4.6%)
-dining table: 48 (4.2%)
+chair: 329 (4.1%)
+table: 323 (4.0%)
+cabinet: 321 (4.0%)
+bed: 318 (3.9%)
+wardrobe: 311 (3.8%)
+shelf: 308 (3.8%)
+lamp: 302 (3.7%)
+loveseat: 298 (3.7%)
+stool: 292 (3.6%)
+sofa: 289 (3.6%)
+credenza: 287 (3.5%)
+bookshelf: 285 (3.5%)
+sideboard: 285 (3.5%)
+bench: 282 (3.5%)
+dresser: 281 (3.5%)
+desk: 277 (3.4%)
+futon: 277 (3.4%)
+recliner: 274 (3.4%)
+ottoman: 271 (3.4%)
+coffee table: 264 (3.3%)
+armchair: 263 (3.3%)
+nightstand: 260 (3.2%)
+dining table: 248 (3.1%)
+rocking chair: 248 (3.1%)
+couch: 247 (3.1%)
+console table: 242 (3.0%)
+office chair: 241 (3.0%)
+accent chair: 236 (2.9%)
+bar stool: 227 (2.8%)
 
 === 來源分布 ===
-synthetic: 1063 (93.7%)
-wikipedia:List of furniture types: 4 (0.4%)
-wikipedia:Sofa bed: 3 (0.3%)
-wikipedia:Kitchen cabinet: 3 (0.3%)
-wikipedia:Partners desk: 3 (0.3%)
-wikipedia:Chair: 2 (0.2%)
-wikipedia:Dressing table: 2 (0.2%)
-wikipedia:Davenport (sofa): 2 (0.2%)
-wikipedia:Bed: 2 (0.2%)
-wikipedia:Murphy bed: 2 (0.2%)
-wikipedia:Cabinetry: 2 (0.2%)
-wikipedia:Bathroom cabinet: 2 (0.2%)
-wikipedia:Akari (lamp): 2 (0.2%)
-wikipedia:Oil lamp: 2 (0.2%)
-wikipedia:Stool (seat): 2 (0.2%)
-wikipedia:Ducking stool: 2 (0.2%)
-wikipedia:Monks bench: 2 (0.2%)
-wikipedia:Welsh dresser: 2 (0.2%)
-wikipedia:Irish dresser: 2 (0.2%)
-wikipedia:Bookcase: 2 (0.2%)
-wikipedia:Noguchi table: 2 (0.2%)
-wikipedia:Garden furniture: 1 (0.1%)
-wikipedia:Love chair: 1 (0.1%)
-wikipedia:Chinese furniture: 1 (0.1%)
-wikipedia:Table (furniture): 1 (0.1%)
-wikipedia:Furniture: 1 (0.1%)
-wikipedia:DFS (furniture retailer): 1 (0.1%)
-wikipedia:Moving sofa problem: 1 (0.1%)
-wikipedia:Hoosier cabinet: 1 (0.1%)
-wikipedia:Shaker furniture: 1 (0.1%)
-wikipedia:Shelf (storage): 1 (0.1%)
-wikipedia:32 mm cabinetmaking system: 1 (0.1%)
-wikipedia:Desk: 1 (0.1%)
-wikipedia:Hoover desk: 1 (0.1%)
-wikipedia:Theodore Roosevelt desk: 1 (0.1%)
-wikipedia:Close stool: 1 (0.1%)
-wikipedia:Human furniture: 1 (0.1%)
-wikipedia:Bench (furniture): 1 (0.1%)
-wikipedia:Settle (furniture): 1 (0.1%)
-wikipedia:Wardrobe: 1 (0.1%)
-wikipedia:Wardrobe (clothing): 1 (0.1%)
-wikipedia:Alexandre de Betak: 1 (0.1%)
-wikipedia:The Coffee Table: 1 (0.1%)
-wikipedia:Coffee table: 1 (0.1%)
-wikipedia:Dining table: 1 (0.1%)
-wikipedia:Dining room: 1 (0.1%)
-wikipedia:Nightstand: 1 (0.1%)
+synthetic: 8012 (99.1%)
+wikipedia:List of furniture types: 6 (0.1%)
+wikipedia:Eames Lounge Chair: 5 (0.1%)
+wikipedia:Sofa bed: 5 (0.1%)
+wikipedia:Kitchen cabinet: 5 (0.1%)
+wikipedia:Dressing table: 3 (0.0%)
+wikipedia:Davenport (sofa): 3 (0.0%)
+wikipedia:Bed: 3 (0.0%)
+wikipedia:China cabinet: 3 (0.0%)
+wikipedia:Filing cabinet: 3 (0.0%)
+wikipedia:Chair: 2 (0.0%)
+wikipedia:Furniture: 2 (0.0%)
+wikipedia:Barcelona chair: 2 (0.0%)
+wikipedia:Table (furniture): 2 (0.0%)
+wikipedia:Noguchi table: 2 (0.0%)
+wikipedia:Couch: 2 (0.0%)
+wikipedia:Moving sofa problem: 2 (0.0%)
+wikipedia:Knole settee: 2 (0.0%)
+wikipedia:Herman Miller: 2 (0.0%)
+wikipedia:Murphy bed: 2 (0.0%)
+wikipedia:Daybed: 2 (0.0%)
+wikipedia:Cabinetry: 2 (0.0%)
+wikipedia:Bathroom cabinet: 2 (0.0%)
+wikipedia:Hoosier cabinet: 2 (0.0%)
+wikipedia:Garden furniture: 1 (0.0%)
+wikipedia:Love chair: 1 (0.0%)
+wikipedia:Chinese furniture: 1 (0.0%)
+wikipedia:Human furniture: 1 (0.0%)
+wikipedia:Shaker furniture: 1 (0.0%)
+wikipedia:Vladimir Putin's meeting table: 1 (0.0%)
+wikipedia:DFS (furniture retailer): 1 (0.0%)
+wikipedia:Ottoman (furniture): 1 (0.0%)
+wikipedia:Bed hangings: 1 (0.0%)
+wikipedia:Bedroom: 1 (0.0%)
 
 === 屬性統計 ===
 
+SIZES:
+  king: 637
+  low: 328
+  single: 315
+  double: 150
+  miniature: 150
+  twin: 145
+  compact: 143
+  large: 142
+  spacious: 141
+  medium: 136
+
 COLORS:
-  red: 80
-  copper: 63
-  gold: 35
-  brown: 33
-  black: 32
-  grey: 32
-  cream: 31
-  blue: 30
-  gray: 30
-  silver: 29
+  red: 649
+  light: 407
+  copper: 359
+  pink: 195
+  white: 194
+  gold: 193
+  maroon: 193
+  blue: 188
+  cream: 186
+  ebony: 186
 
 MATERIALS:
-  wood: 73
-  copper: 63
-  wicker: 63
-  rattan: 57
-  stone: 54
-  acrylic: 52
-  brass: 51
-  plastic: 51
-  marble: 51
-  velvet: 50
+  wood: 453
+  copper: 359
+  walnut: 330
+  bamboo: 196
+  brass: 182
+  rattan: 180
+  stone: 179
+  pine: 179
+  upholstered: 175
+  metal: 175
 
 FUNCTIONS:
-  dining: 130
-  sleeping: 35
-  decorative: 33
-  seating: 29
-  organization: 27
-  storage: 25
-  display: 24
-  reading: 24
-  lighting: 24
-  working: 23
+  dining: 791
+  reading: 277
+  relaxation: 275
+  working: 266
+  lighting: 266
+  sleeping: 258
+  entertainment: 250
+  storage: 249
+  decorative: 249
+  seating: 247
 
-SIZES:
-  king: 32
-  large: 7
-  small: 3
-  queen: 1
-  single: 1
-  double: 1
-  compact: 1
+ROOMS:
+  office: 843
+  bedroom: 573
+  children's room: 334
+  hallway: 326
+  kitchen: 316
+  patio: 312
+  balcony: 310
+  dining room: 309
+  study: 308
+  bathroom: 306
 
 STYLES:
-  modern: 274
-  contemporary: 218
-  vintage: 48
-  colonial: 47
-  zen: 46
-  industrial: 46
-  baroque: 46
-  victorian: 45
-  bohemian: 44
-  country: 44
+  modern: 592
+  contemporary: 379
+  luxury: 256
+  korean: 153
+  french_country: 142
+  loft: 141
+  colonial: 140
+  coastal: 138
+  industrial: 137
+  urban: 137
+
+PLACEMENTS:
+  corner: 746
+  center: 576
+  freestanding: 319
+  under the window: 314
+  beside the bed: 307
+  wall-mounted: 295
+  near the entrance: 294
+  by the window: 286
+  against the wall: 278
+  in the center of the room: 268
+
+CAPACITIES:
+  group: 228
+  multi-person: 220
+  family-sized: 219
+  couples: 207
+  six-person: 207
+  eight-person: 206
+  two-person: 198
+  three-person: 190
+  individual: 181
+  single-person: 180
 
 SHAPES:
-  angular: 42
-  rectangular: 22
-  linear: 20
-  curved: 19
-  circular: 18
-  round: 17
-  organic: 16
-  square: 15
-  geometric: 15
-  straight: 10
+  angular: 203
+  sectional: 102
+  modular: 98
+  round: 95
+  organic: 95
+  rectangular: 93
+  square: 92
+  straight: 92
+  circular: 91
+  linear: 88

@@ -7,7 +7,7 @@ import numpy as np
 import os
 from tqdm import tqdm
 
-def build_rag_index(corpus_dir='data/rag_corpus',
+def build_rag_index(corpus_dir='/home/kyzen/cheng/ulip_rag/rag_corpus',
                     clip_model_name='ViT-B-32',
                     pretrained_tag='laion2b_s34b_b79k',
                     batch_size=64,
@@ -51,3 +51,14 @@ def build_rag_index(corpus_dir='data/rag_corpus',
     faiss.write_index(index, index_path)
     print(f'💾  Saved to {index_path}')
 # ----------------------------------------------------------------------
+
+if __name__ == '__main__':
+    # 更新路徑為正確的 data/rag_corpus
+    build_rag_index(
+        corpus_dir='data/rag_corpus',  # 相對於項目根目錄
+        clip_model_name='ViT-B-32',
+        pretrained_tag='laion2b_s34b_b79k',
+        batch_size=64,
+        device='cuda' if torch.cuda.is_available() else 'cpu'
+    )
+    print('\\n✅ RAG Index building completed!')

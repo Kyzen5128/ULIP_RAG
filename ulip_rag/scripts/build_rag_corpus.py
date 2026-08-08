@@ -83,41 +83,222 @@ class OpenCorpusBuilder:
         self.target_categories = [
             "chair", "table", "sofa", "bed", "cabinet", "shelf", "lamp", 
             "desk", "stool", "bench", "dresser", "wardrobe", "bookshelf",
-            "coffee table", "dining table", "armchair", "nightstand"
+            "coffee table", "dining table", "armchair", "nightstand",
+            # 新增
+            "recliner", "ottoman", "loveseat", "futon", "couch",
+            "sideboard", "credenza", "console table", "bar stool",
+            "office chair", "rocking chair", "accent chair"
         ]
     
     def _load_attribute_vocabulary(self) -> Dict[str, Set[str]]:
         """載入屬性詞彙表"""
         return {
+            # 顏色 (Colors)
             "colors": {
-                "red", "blue", "green", "yellow", "orange", "purple", "pink",
-                "black", "white", "gray", "grey", "brown", "beige", "cream",
-                "navy", "maroon", "gold", "silver", "bronze", "copper"
+                "red",          # 紅色
+                "blue",         # 藍色
+                "green",        # 綠色
+                "yellow",       # 黃色
+                "orange",       # 橘色
+                "purple",       # 紫色
+                "pink",         # 粉紅
+                "black",        # 黑色
+                "white",        # 白色
+                "gray",         # 灰色
+                "grey",         # 灰色
+                "brown",        # 棕色
+                "beige",        # 米色
+                "cream",        # 奶油色
+                "navy",         # 海軍藍
+                "maroon",       # 栗色
+                "gold",         # 金色
+                "silver",       # 銀色
+                "bronze",       # 青銅色
+                "copper",       # 銅色
+                "walnut-toned", # 胡桃木色
+                "cherry",       # 櫻桃色
+                "ebony",        # 烏木色
+                "natural",      # 原木色
+                "light",        # 淺色
+                "dark"          # 深色
             },
+            # 材質 (Materials)
             "materials": {
-                "wood", "wooden", "oak", "pine", "mahogany", "teak", "walnut",
-                "metal", "steel", "iron", "aluminum", "brass", "copper",
-                "plastic", "acrylic", "glass", "leather", "fabric", "cotton",
-                "velvet", "silk", "linen", "marble", "stone", "ceramic",
-                "bamboo", "rattan", "wicker", "upholstered"
+                "wood",         # 木頭
+                "wooden",       # 木製
+                "oak",          # 橡木
+                "pine",         # 松木
+                "mahogany",     # 桃花心木
+                "teak",         # 柚木
+                "walnut",       # 胡桃木
+                "metal",        # 金屬
+                "steel",        # 鋼
+                "iron",         # 鐵
+                "aluminum",     # 鋁
+                "brass",        # 黃銅
+                "copper",       # 銅
+                "plastic",      # 塑膠
+                "acrylic",      # 亞克力
+                "glass",        # 玻璃
+                "leather",      # 皮革
+                "fabric",       # 布料
+                "cotton",       # 棉
+                "velvet",       # 天鵝絨
+                "silk",         # 絲綢
+                "linen",        # 亞麻
+                "marble",       # 大理石
+                "stone",        # 石材
+                "ceramic",      # 陶瓷
+                "bamboo",       # 竹子
+                "rattan",       # 藤
+                "wicker",       # 柳條編織
+                "upholstered",  # 軟包/沙發布
+                "plywood",      # 夾板
+                "MDF"           # 密集板
             },
             "styles": {
-                "modern", "contemporary", "vintage", "antique", "traditional",
-                "minimalist", "industrial", "scandinavian", "mid-century",
-                "rustic", "shabby chic", "art deco", "victorian", "baroque",
-                "colonial", "country", "urban", "zen", "bohemian", "eclectic"
+                # === Modern / Contemporary ===
+                "modern",                   # 現代
+                "contemporary",             # 當代
+                "minimalist",               # 極簡
+                "scandinavian",             # 北歐
+                "industrial",               # 工業風
+                "mid_century_modern",       # 中世紀現代
+                "modern_luxury",            # 現代輕奢
+
+                # === Natural / Lifestyle ===
+                "japanese",                 # 日式
+                "zen",                      # 禪風
+                "rustic",                   # 鄉村
+                "farmhouse",                # 農舍風
+                "coastal",                  # 海岸風
+                "bohemian",                 # 波希米亞
+
+                # === Classic / Historical ===
+                "traditional",              # 傳統
+                "vintage",                  # 復古（近代）
+                "antique",                  # 古董
+                "victorian",                # 維多利亞
+                "baroque",                  # 巴洛克
+                "rococo",                   # 洛可可
+                "art_deco",                 # 裝飾藝術
+                "colonial",                 # 殖民風
+                "french_country",           # 法式鄉村
+
+                # === Design-driven / Mixed ===
+                "eclectic",                 # 折衷主義
+                "urban",                    # 都市風
+                "loft",                     # 工業風
+                "futuristic",               # 未來風
+
+                # === Regional / Market-driven ===
+                "korean",                   # 韓式
+                "italian_modern",           # 義式現代
+                "american_modern",          # 美式現代
+
+                # === Premium / Statement ===
+                "luxury"                    # 奢華
             },
+            # 功能 (Functions)
             "functions": {
-                "storage", "seating", "sleeping", "dining", "working", "reading",
-                "display", "lighting", "decorative", "entertainment", "organization"
+                "storage",       # 儲物
+                "seating",       # 座位
+                "sleeping",      # 睡眠
+                "dining",        # 用餐
+                "working",       # 工作
+                "reading",       # 閱讀
+                "display",       # 展示
+                "lighting",      # 照明
+                "decorative",    # 裝飾
+                "entertainment", # 娛樂
+                "organization",  # 整理
+                "relaxation",    # 放鬆
+                "gathering",     # 聚會
+                "conversation"   # 交談
             },
+            # 形狀 (Shapes)
             "shapes": {
-                "round", "square", "rectangular", "oval", "circular", "linear",
-                "curved", "straight", "angular", "geometric", "organic"
+                "round",        # 圓形
+                "square",       # 方形
+                "rectangular",  # 長方形
+                "oval",         # 橢圓形
+                "circular",     # 圓形
+                "linear",       # 線性
+                "curved",       # 曲線
+                "straight",     # 直線
+                "angular",      # 有角度的
+                "geometric",    # 幾何形
+                "organic",      # 有機形態
+                "L-shaped",     # L型
+                "U-shaped",     # U型
+                "modular",      # 模組化
+                "sectional"     # 組合式
             },
+            # 尺寸 (Sizes)
             "sizes": {
-                "small", "medium", "large", "compact", "oversized", "miniature",
-                "full-size", "queen", "king", "twin", "single", "double"
+                "small",        # 小
+                "medium",       # 中
+                "large",        # 大
+                "compact",      # 緊湊
+                "oversized",    # 超大
+                "miniature",    # 迷你
+                "full-size",    # 全尺寸
+                "queen",        # 雙人（床墊）
+                "king",         # 加大雙人
+                "twin",         # 單人
+                "single",       # 單人
+                "double",       # 雙人
+                "spacious",     # 寬敞
+                "narrow",       # 窄
+                "wide",         # 寬
+                "tall",         # 高
+                "low"           # 低
+            },
+            # 容納人數 (Capacities)
+            "capacities": {
+                "single-person",  # 單人
+                "two-person",     # 雙人
+                "three-person",   # 三人
+                "four-person",    # 四人
+                "six-person",     # 六人
+                "eight-person",   # 八人
+                "family-sized",   # 家庭尺寸
+                "couples",        # 情侶
+                "individual",     # 個人
+                "group",          # 群體
+                "multi-person"    # 多人
+            },
+            # 擺放位置 (Placements)
+            "placements": {
+                "corner",                    # 角落
+                "center",                    # 中央
+                "wall-mounted",              # 壁掛
+                "freestanding",              # 獨立式
+                "against the wall",          # 靠牆
+                "by the window",             # 窗邊
+                "near the entrance",         # 入口附近
+                "beside the bed",            # 床邊
+                "under the window",          # 窗下
+                "in the center of the room", # 房間中央
+                "next to the sofa",          # 沙發旁
+                "facing the TV"              # 對著電視
+            },
+            # 房間 (Rooms)
+            "rooms": {
+                "living room",     # 客廳
+                "dining room",     # 餐廳
+                "bedroom",         # 臥室
+                "office",          # 辦公室
+                "study",           # 書房
+                "kitchen",         # 廚房
+                "bathroom",        # 浴室
+                "hallway",         # 走廊
+                "balcony",         # 陽台
+                "patio",           # 露台
+                "guest room",      # 客房
+                "children's room", # 兒童房
+                "master bedroom",  # 主臥
+                "home office"      # 居家辦公室
             }
         }
     
@@ -169,7 +350,11 @@ class OpenCorpusBuilder:
         
         for category in tqdm(self.target_categories, desc="Wikipedia extraction"):
             try:
-                search_results = wikipedia.search(f"{category} furniture", results=5)
+                # 原本
+                # search_results = wikipedia.search(f"{category} furniture", results=5)
+                # 改成
+                search_results = wikipedia.search(f"{category} furniture", results=10)  # 增加到 10
+
                 
                 for page_title in search_results:
                     try:
@@ -214,7 +399,10 @@ class OpenCorpusBuilder:
                 if cleaned:
                     relevant.append(cleaned)
         
-        return relevant[:3]
+        # 原本只取前 3 段
+        #return relevant[:3]
+        # 改成取前 5 段
+        return relevant[:5]
     
     def _clean_paragraph(self, paragraph: str) -> str:
         cleaned = re.sub(r'\[\d+\]', '', paragraph)
@@ -226,20 +414,42 @@ class OpenCorpusBuilder:
     def generate_synthetic_descriptions(self) -> List[CorpusEntry]:
         entries = []
         templates = [
+            # 基本描述（材質+顏色+風格）
             "This {category} features a {style} design with {material} construction and {color} finish.",
-            "A {style} {category} made from {material}, perfect for {function} in {setting} spaces.",
+            "A {style} {category} made from {material}, perfect for {function} in {room} spaces.",
             "Contemporary {category} with {shape} form, crafted in {material} with {color} accents.",
-            "Classic {category} design featuring {material} frame and {color} upholstery, ideal for {setting}.",
-            "Modern {category} combining {material} and {material2} for a {style} aesthetic."
+            
+            # 場景+擺放位置
+            "This {size} {category} is ideal for placement {placement}, adding {style} charm to your {room}.",
+            "A {color} {material} {category} designed to be placed {placement} in your {room}.",
+            "Perfect for {room}, this {category} fits beautifully {placement}.",
+            
+            # 容納人數
+            "A {capacity} {category} with {style} design, perfect for {function} and {function2}.",
+            "This {size} {category} comfortably accommodates {capacity} use, made from premium {material}.",
+            "Designed for {capacity} comfort, this {color} {category} features {material} construction.",
+            
+            # 綜合描述（多維度）
+            "This {style} {category} in {color} {material} is sized for {capacity} use, ideal {placement} in your {room}.",
+            "A {size} {shape} {category} with {color} finish, crafted from {material} for {function} in the {room}.",
+            "Elegant {capacity} {category} featuring {material} frame with {color} upholstery, perfect {placement}.",
+            
+            # 功能性描述
+            "This {category} offers excellent {function} capabilities with its {shape} {material} design.",
+            "A {style} {category} optimized for {function}, featuring {size} dimensions and {color} tones.",
+            "Multi-functional {category} suitable for {function} and {function2}, available in {color} {material}.",
+            
+            # 空間描述
+            "Transform your {room} with this {style} {category}, designed for placement {placement}.",
+            "This {size} {category} maximizes space efficiency when placed {placement} in your {room}.",
+            "Ideal for {room} corners or {placement}, this {color} {category} adds {style} elegance."
         ]
-        
-        settings = ["living room", "dining room", "bedroom", "office", "study"]
         
         import random
         for category in self.target_categories:
             for template in templates:
                 for _ in range(20):
-                    description = self._fill_template(template, category, settings)
+                    description = self._fill_template(template, category)
                     if description:
                         entries.append(CorpusEntry(
                             text=description,
@@ -250,7 +460,7 @@ class OpenCorpusBuilder:
                         ))
         return entries
     
-    def _fill_template(self, template: str, category: str, settings: List[str]) -> str:
+    def _fill_template(self, template: str, category: str) -> str:
         try:
             import random
             
@@ -262,7 +472,11 @@ class OpenCorpusBuilder:
                 "color": random.choice(list(self.attribute_vocab["colors"])),
                 "shape": random.choice(list(self.attribute_vocab["shapes"])),
                 "function": random.choice(list(self.attribute_vocab["functions"])),
-                "setting": random.choice(settings)
+                "function2": random.choice(list(self.attribute_vocab["functions"])),
+                "size": random.choice(list(self.attribute_vocab["sizes"])),
+                "capacity": random.choice(list(self.attribute_vocab["capacities"])),
+                "placement": random.choice(list(self.attribute_vocab["placements"])),
+                "room": random.choice(list(self.attribute_vocab["rooms"]))
             }
             
             used_keys = re.findall(r'\{(\w+)\}', template)
